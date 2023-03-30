@@ -73,3 +73,17 @@ CREATE TABLE service(
 	id_provider serial,
 	foreign key (id_provider) references provider(id_provider)
 );
+
+
+/*credencials of flyctl*/
+Username:    postgres
+Password:    y3VCaHm90HSsN1x
+Hostname:    boatmatepostgres.internal
+Flycast:     fdaa:1:c9d7:0:1::2
+Proxy port:  5432
+Postgres port:  5433
+Connection string: postgres://postgres:y3VCaHm90HSsN1x@boatmatepostgres.flycast:5432
+
+
+/*database URL*/
+DATABASE_URL=postgres://boatmate:5hP5e6O2oIoiGzH@boatmatepostgres.flycast:5432/boatmate?sslmode=disable
