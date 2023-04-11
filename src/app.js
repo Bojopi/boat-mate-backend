@@ -6,6 +6,9 @@ import cors from 'cors';
 env.config();
 const app = express();
 
+//settings
+app.set('port', process.env.PORT || 8080)
+
 //routes
 import rolRoutes from './routes/rol.routes.js';
 import authRoutes from './routes/auth.routes.js';

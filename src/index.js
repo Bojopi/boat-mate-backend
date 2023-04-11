@@ -16,7 +16,7 @@ import './models/Schedule.js';
 const connect = async () => {
     try {
         await sequelize.sync({alter: true})
-        app.listen('8080');
+        app.listen(app.get('port'))
         console.log('listening on port 8080');
     } catch (error) {
         console.log('Unable to connect', error);
