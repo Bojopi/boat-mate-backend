@@ -1,10 +1,15 @@
-const { Router } = require('express');
-const { getAllRoles, getRole } = require('../controllers/rol.controller')
+import { Router } from 'express';
+import { getAllRoles, getRole } from "../controllers/rol.controller.js";
+import { validateJWT } from '../middlewares/validate-jwt.js';
+import { validateRol } from '../middlewares/validate-rol.js';
 
 const router = Router();
 
-router.get('/role', getAllRoles)
+router.get('/roles', [
+    validateJWT,
+    validateRol('ADMIN', 'PROVIDER')
+], getAllRoles);
 
-router.get('/role/10', getRole)
+router.get('/roles/:id', getRole)
 
-module.exports = router;
+export default router;
