@@ -1,27 +1,26 @@
 CREATE DATABASE boatmate
 
-CREATE TABLE role(
+CREATE TABLE roles(
     id_role serial primary key,
     description_role varchar(15)
 );
 
-CREATE TABLE profile(
-	id_profile serial primary key,
-	username varchar(20),
-	password varchar(255),
-	state boolean,
-	id_role serial,
-	foreign key (id_role) references role(id_role)
-);
-
-CREATE TABLE person(
+CREATE TABLE people(
 	id_person serial primary key,
 	name varchar(30),
 	lastname varchar(30),
 	mail varchar(50),
 	phone varchar(30),
 	id_profile serial,
-	foreign key (id_profile) references profile(id_profile)
+);
+
+CREATE TABLE profiles(
+	id_profile serial primary key,
+	username varchar(20),
+	password varchar(255),
+	state boolean,
+	id_role serial,
+	foreign key (id_role) references role(id_role)
 );
 
 CREATE TABLE provider(
