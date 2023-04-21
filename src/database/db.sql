@@ -92,20 +92,21 @@ DATABASE_URL=postgres://boatmate:5hP5e6O2oIoiGzH@boatmatepostgres.flycast:5432/b
 
 --Roles
 INSERT INTO roles(description_role) VALUES ('ADMIN');
+INSERT INTO roles(description_role) VALUES ('SUPERADMIN');
 INSERT INTO roles(description_role) VALUES ('PROVIDER');
 INSERT INTO roles(description_role) VALUES ('CUSTOMER');
 
 --People
-INSERT INTO people(name, lastname, email, phone) VALUES ('John', 'Due', 'john@gmail.com', '63792382');
-INSERT INTO people(name, lastname, email, phone) VALUES ('Martha', 'Jackson', 'martha@gmail.com', '63792382');
-INSERT INTO people(name, lastname, email, phone) VALUES ('Juan', 'Perez', 'juan@gmail.com', '63792382');
-INSERT INTO people(name, lastname, email, phone) VALUES ('Ana', 'Rojas', 'ana@gmail.com', '63792382');
+INSERT INTO people(name, lastname, phone) VALUES ('Chris', 'Cooper', '63792382');
+INSERT INTO people(name, lastname, phone) VALUES ('Martha', 'Jackson', '63792382');
+INSERT INTO people(name, lastname, phone) VALUES ('Juan', 'Perez', '63792382');
+INSERT INTO people(name, lastname, phone) VALUES ('Ana', 'Rojas', '63792382');
 
 --Profiles
-INSERT INTO profiles(username, password, state, "roleId", "personId") VALUES ('jdue', '$2a$12$UTV6djqkgNkcBsuJFmrK/OtsUstoiHFZH5gEBnRhKuwg.p/x3F1qS', true, 1, 1);
-INSERT INTO profiles(username, password, state, "roleId", "personId") VALUES ('mjackson', '$2a$12$UTV6djqkgNkcBsuJFmrK/OtsUstoiHFZH5gEBnRhKuwg.p/x3F1qS', true, 2, 2);
-INSERT INTO profiles(username, password, state, "roleId", "personId") VALUES ('jperez', '123456', true, 3, 3);
-INSERT INTO profiles(username, password, state, "roleId", "personId") VALUES ('arojas', '123456', true, 3, 4);
+INSERT INTO profiles(email, password, state, "roleId", "personId") VALUES ('chris@gmail.com', '$2a$12$UTV6djqkgNkcBsuJFmrK/OtsUstoiHFZH5gEBnRhKuwg.p/x3F1qS', true, 2, 1);
+INSERT INTO profiles(email, password, state, "roleId", "personId") VALUES ('martha@gmail.com', '$2a$12$UTV6djqkgNkcBsuJFmrK/OtsUstoiHFZH5gEBnRhKuwg.p/x3F1qS', true, 1, 2);
+INSERT INTO profiles(email, password, state, "roleId", "personId") VALUES ('juan@gmail.com', '123456', true, 4, 3);
+INSERT INTO profiles(email, password, state, "roleId", "personId") VALUES ('ana@gmail.com', '123456', true, 3, 4);
 
 --Customers
 INSERT INTO customers(image, position, service, "profileId") VALUES ('https://i.postimg.cc/dtRVYfdj/benjamin-grull-t-Z78-Ef-WSW8-Q-unsplash.jpg', '(1, 1)', 'Servicio 1', 3);
@@ -129,3 +130,14 @@ INSERT INTO services(detail, type, cost, "providerId") VALUES ('detail service 1
 INSERT INTO services(detail, type, cost, "providerId") VALUES ('detail service 2', 'type 2', 234.89, 1);
 INSERT INTO services(detail, type, cost, "providerId") VALUES ('detail service 3', 'type 3', 38.12, 1);
 INSERT INTO services(detail, type, cost, "providerId") VALUES ('detail service 4', 'type 4', 2000.50, 1);
+
+--Categories
+INSERT INTO categories(name) VALUES ('category 1');
+INSERT INTO categories(name) VALUES ('category 2');
+INSERT INTO categories(name) VALUES ('category 3');
+
+--Service Categories
+INSERT INTO service_categories("serviceId", "categoryId") VALUES (1, 1);
+INSERT INTO service_categories("serviceId", "categoryId") VALUES (2, 2);
+INSERT INTO service_categories("serviceId", "categoryId") VALUES (1, 3);
+INSERT INTO service_categories("serviceId", "categoryId") VALUES (3, 1);

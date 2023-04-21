@@ -14,12 +14,12 @@ export const Person = sequelize.define('person', {
     lastname: {
         type: DataTypes.STRING
     },
-    email: {
-        type: DataTypes.STRING,
-    },
     phone: {
         type: DataTypes.STRING,
     },
+    image: {
+        type: DataTypes.STRING,
+    }
 }, {
     timestamps: false
 })
