@@ -18,6 +18,7 @@ import providerRoutes from './routes/provider.routes.js';
 import serviceRoutes from './routes/service.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import customerRoutes from './routes/customer.routes.js';
+import boatRoutes from './routes/boat.routes.js';
 
 const allowedOrigins = ['http://localhost:3000', 'https://boatmate-frontend.vercel.app/'];
 
@@ -53,6 +54,7 @@ app.use(providerRoutes);
 app.use(serviceRoutes);
 app.use(categoryRoutes);
 app.use(customerRoutes);
+app.use(boatRoutes);
 
 
 
