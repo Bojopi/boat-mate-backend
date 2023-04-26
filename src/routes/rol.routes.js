@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/roles', [
     validateJWT,
-    validateRol('ADMIN', 'PROVIDER')
+    validateRol('ADMIN', 'SUPERADMIN')
 ], getAllRoles);
 
 router.get('/roles/:id', getRole)

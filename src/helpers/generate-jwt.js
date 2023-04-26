@@ -6,31 +6,32 @@ export const generateJWT = ( profile ) => {
         const {
         id_profile,
         email, 
-        state, 
+        profile_state, 
         person:{
             dataValues: {
-                name,
+                person_name,
                 lastname,
                 phone,
-                image
+                person_image
             }
         },
         role: {
             dataValues: {
-                description_role
+                role_description
             }
         }} = profile
 
         const payload = { 
             uid:  id_profile,
             email: email,
-            state: state,
-            name: name,
+            state: profile_state,
+            name: person_name,
             lastname: lastname,
             phone: phone,
-            image: image,
-            role: description_role
+            image: person_image,
+            role: role_description
         }
+        console.log(payload)
 
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' },
         (err, token) => {

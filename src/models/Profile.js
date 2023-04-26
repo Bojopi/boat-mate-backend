@@ -15,7 +15,7 @@ export const Profile = sequelize.define('profiles', {
     password: {
         type: DataTypes.STRING
     },
-    state: {
+    profile_state: {
         type: DataTypes.BOOLEAN,
     },
     google: {

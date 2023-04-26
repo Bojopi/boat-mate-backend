@@ -29,7 +29,7 @@ export const Boat = sequelize.define('boats', {
     length: {
         type: DataTypes.STRING(10),
     },
-    position: {
+    boat_position: {
         type: DataTypes.STRING,
     }
 }, {

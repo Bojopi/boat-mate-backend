@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
 
-export const ServiceCategories = sequelize.define('service_categories', {
+export const ServicePreferences = sequelize.define('service_preferences', {
     serviceId: {
         type: DataTypes.INTEGER,
         references: {
@@ -9,11 +9,11 @@ export const ServiceCategories = sequelize.define('service_categories', {
             key: 'id_service'
         }
     },
-    categoryId: {
+    customerId: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'categories',
-            key: 'id_category'
+            model: 'customers',
+            key: 'id_customer'
         }
     },
 }, {

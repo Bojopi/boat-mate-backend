@@ -8,7 +8,7 @@ export const Person = sequelize.define('person', {
         primaryKey: true,
         autoIncrement: true
     },
-    name: {
+    person_name: {
         type: DataTypes.STRING,
     },
     lastname: {
@@ -17,7 +17,7 @@ export const Person = sequelize.define('person', {
     phone: {
         type: DataTypes.STRING,
     },
-    image: {
+    person_image: {
         type: DataTypes.STRING,
     }
 }, {

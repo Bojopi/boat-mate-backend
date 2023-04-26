@@ -1,18 +1,13 @@
 import { Router } from 'express';
-
-import { getUsersAll, setRoleUser } from '../controllers/user.controller.js';
 import { validateJWT } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
-
-
+import { getAllServices } from '../controllers/service.controller.js';
 
 const router = Router();
 
-router.post('/users', [
+router.get('/services', [
     validateJWT,
     validateRol('ADMIN', 'SUPERADMIN')
-], getUsersAll);
-router.post('/user/:id', [validateJWT] , setRoleUser);
-
+], getAllServices);
 
 export default router;

@@ -26,7 +26,7 @@ export const login = async (req, res = response) => {
         }
 
         //if profile is active
-        if(!profile.state) {
+        if(!profile.profile_state) {
             return res.status(400).json({
                 msg: 'Incorrect Email / Password'
             });
@@ -47,7 +47,7 @@ export const login = async (req, res = response) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
-            maxAge: 1000 * 60 * 60 * 24 * 1,
+            maxAge: 1000 * 60 * 1,
             path: '/'
         })
 
@@ -92,17 +92,17 @@ export const googleSignIn = async (req, res = response) => {
         //nonexistent user
         if(!user) {
             const data = {
-                name: name,
+                person_name: name,
                 lastname: lastname,
                 phone: '',
-                image: image
+                person_image: image
             }
 
             const person = await Person.create(data)
             await person.createProfile({
                 email: email,
                 password: '123',
-                state: true,
+                profile_state: true,
                 roleId: 4,
                 personId: person.dataValues.id_person,
                 google: true
@@ -117,7 +117,7 @@ export const googleSignIn = async (req, res = response) => {
         }
 
         //if the user exists but is disabled
-        if(!user.state) {
+        if(!user.profile_state) {
             return res.status(401).json({
                 msg: 'User is disabled'
             })

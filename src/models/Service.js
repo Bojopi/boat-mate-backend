@@ -9,15 +9,12 @@ export const Service = sequelize.define('services', {
         primaryKey: true,
         autoIncrement: true
     },
-    detail: {
+    service_name: {
         type: DataTypes.STRING,
     },
-    type: {
+    service_description: {
         type: DataTypes.STRING
-    },
-    cost: {
-        type: DataTypes.FLOAT
-    },
+    }
 }, {
     timestamps: false
 });
@@ -28,8 +25,12 @@ Service.belongsToMany(Category, {
     uniqueKey: 'serviceId',
     foreignKey: 'serviceId',
 });
+
 Category.belongsToMany(Service, { 
     through: ServiceCategories, 
     uniqueKey: 'categoryId',
     foreignKey: 'categoryId',
 });
+
+
+

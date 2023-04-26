@@ -24,7 +24,7 @@ export const validateJWT = async (req = request, res = response, next) => {
             });
         }
         
-        if(!profile.state) {
+        if(!profile.profile_state) {
             return res.status(401).json({
                 msg: 'Token invalid'
             });

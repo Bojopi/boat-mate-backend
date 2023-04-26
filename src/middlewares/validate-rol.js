@@ -7,12 +7,12 @@ export const adminRol = (req, res = response, next) => {
     }
 
     const {
-        role: {description_role},
-        person: {name}
+        role: {rol_description},
+        person: {person_name}
     } = req.profile;
 
-    if(description_role.toUpperCase() !== 'ADMIN') {
-        return res.status(401).json({ msg: `${name} do not have permissions to access this functionality` });
+    if(rol_description.toUpperCase() !== 'ADMIN') {
+        return res.status(401).json({ msg: `${person_name} do not have permissions to access this functionality` });
     }
 
     next();
@@ -25,12 +25,12 @@ export const validateRol = (...roles) => {
         }
 
         const {
-            role: {description_role},
+            role: {role_description},
         } = req.profile;
 
-        if(!roles.includes(description_role)) {
+        if(!roles.includes(role_description)) {
             return res.status(401).json({
-                msg: `${description_role} do not have permissions to access this functionality`
+                msg: `${role_description} do not have permissions to access this functionality`
             })
         }
 

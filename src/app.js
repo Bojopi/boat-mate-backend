@@ -14,8 +14,12 @@ app.set('port', process.env.PORT || 8080)
 import rolRoutes from './routes/rol.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
+import providerRoutes from './routes/provider.routes.js';
+import serviceRoutes from './routes/service.routes.js';
+import categoryRoutes from './routes/category.routes.js';
+import customerRoutes from './routes/customer.routes.js';
 
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = ['http://localhost:3000', 'https://boatmate-frontend.vercel.app/'];
 
 const corsOptions = {
     origin: function(origin, callback) {
@@ -45,6 +49,10 @@ app.use((err, req, res, next) => {
 app.use(rolRoutes);
 app.use(authRoutes);
 app.use(userRoutes);
+app.use(providerRoutes);
+app.use(serviceRoutes);
+app.use(categoryRoutes);
+app.use(customerRoutes);
 
 
 

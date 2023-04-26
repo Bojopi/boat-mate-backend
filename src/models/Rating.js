@@ -1,15 +1,19 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
 
-export const Category = sequelize.define('categories', {
-    id_category: {
+export const Rating = sequelize.define('ratings', {
+    id_rating: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    category_name: {
-        type: DataTypes.STRING,
+    rating: {
+        type: DataTypes.INTEGER,
     },
+    review: {
+        type: DataTypes.STRING
+    }
 }, {
     timestamps: false
-});
+})
+
