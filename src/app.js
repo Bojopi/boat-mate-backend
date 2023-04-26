@@ -20,7 +20,8 @@ import categoryRoutes from './routes/category.routes.js';
 import customerRoutes from './routes/customer.routes.js';
 import boatRoutes from './routes/boat.routes.js';
 
-const allowedOrigins = ['http://localhost:3000', 'https://boatmate-frontend.vercel.app/'];
+// const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = ['https://boatmate-frontend.vercel.app/'];
 
 const corsOptions = {
     origin: function(origin, callback) {
