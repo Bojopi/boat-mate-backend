@@ -35,7 +35,7 @@ const corsOptions = {
 }
 
 app.use(cors({
-    origin: true,
+    origin: 'https://boatmate-frontend.vercel.app',
     credentials: true
 }));
 app.use(morgan('dev'));

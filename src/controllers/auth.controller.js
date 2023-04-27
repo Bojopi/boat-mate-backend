@@ -44,12 +44,13 @@ export const login = async (req, res = response) => {
         const token = await generateJWT(profile);
 
         res.cookie('tokenUser', token, {
-            domain: 'boatmate-backend-production.up.railway.app',
-            path: '/',
-            httpOnly: false,
+            httpOnly: true,
             secure: true,
-            sameSite: 'none'
-        })
+            domain: 'boatmate-backend-production.up.railway.app',
+            path: '/'
+        }).send();
+
+        
         // const serialized = serialize('tokenUser', token, {
         //     httpOnly: true,
         //     secure: process.env.NODE_ENV === 'production',
@@ -60,9 +61,9 @@ export const login = async (req, res = response) => {
 
         // res.setHeader('Set-Cookie', serialized)
 
-        return res.json({
-            msg: 'Login successfully'
-        });
+        // return res.json({
+        //     msg: 'Login successfully'
+        // });
     } catch (error) {
         return res.status(400).json({message: error.message});
     }
