@@ -47,10 +47,11 @@ export const login = async (req, res = response) => {
             httpOnly: true,
             secure: true,
             domain: 'boatmate-backend-production.up.railway.app',
-            path: '/'
+            path: '/',
+            sameSite: 'none'
         }).send();
 
-        
+
         // const serialized = serialize('tokenUser', token, {
         //     httpOnly: true,
         //     secure: process.env.NODE_ENV === 'production',
