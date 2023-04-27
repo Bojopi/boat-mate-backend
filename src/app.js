@@ -41,7 +41,7 @@ app.use(cookieParser())
 
 
 app.use((err, req, res, next) => {
-    res.header('Access-Control-Allow-Origin', allowedOrigins[0]);
+    res.header('Access-Control-Allow-Origin', allowedOrigins);
     return res.json({
         message: err.message
     });
