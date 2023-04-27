@@ -43,16 +43,20 @@ export const login = async (req, res = response) => {
         //generate the jwt
         const token = await generateJWT(profile);
 
-        const serialized = serialize('tokenUser', token, {
-            // httpOnly: true,
+        res.cookie('tokenUser', token, {
+            httpOnly: true,
             secure: true,
-            // secure: process.env.NODE_ENV === 'production',
-            sameSite: 'none',
-            maxAge: 1000 * 60 * 1,
-            path: '/'
+            sameSite: 'none'
         })
+        // const serialized = serialize('tokenUser', token, {
+        //     httpOnly: true,
+        //     secure: process.env.NODE_ENV === 'production',
+        //     sameSite: 'none',
+        //     maxAge: 1000 * 60 * 1,
+        //     path: '/'
+        // })
 
-        res.setHeader('Set-Cookie', serialized)
+        // res.setHeader('Set-Cookie', serialized)
 
         return res.json({
             msg: 'Login successfully'
