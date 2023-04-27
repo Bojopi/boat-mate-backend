@@ -31,7 +31,6 @@ export const generateJWT = ( profile ) => {
             image: person_image,
             role: role_description
         }
-        console.log(payload)
 
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' },
         (err, token) => {
