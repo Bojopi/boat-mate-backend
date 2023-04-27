@@ -46,7 +46,7 @@ export const login = async (req, res = response) => {
         res.cookie('tokenUser', token, {
             domain: 'boatmate-backend-production.up.railway.app',
             path: '/',
-            httpOnly: true,
+            httpOnly: false,
             secure: true,
             sameSite: 'none'
         })
