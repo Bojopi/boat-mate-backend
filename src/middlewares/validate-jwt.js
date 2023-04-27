@@ -5,16 +5,16 @@ import { Role } from '../models/Role.js';
 import { verify } from 'jsonwebtoken';
 
 export const validateJWT = async (req = request, res = response, next) => {
-    const { tokenUser } = req.cookies;
+    const { token } = req.cookies;
 
-    if(!tokenUser) {
+    if(!token) {
         return res.status(401).json({
             msg: 'Token undefined'
         });
     }
 
     try {
-        const { uid } = verify(tokenUser, process.env.JWT_SECRET);
+        const { uid } = verify(token, process.env.JWT_SECRET);
 
         const profile = await Profile.findOne({where: { id_profile: uid }, include: [Person, Role]});
 

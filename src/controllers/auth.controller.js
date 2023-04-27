@@ -46,10 +46,12 @@ export const login = async (req, res = response) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
+            sameSite: 'none',
             domain: 'boatmate-backend-production.up.railway.app',
+            domain: 'localhost',
             path: '/',
-            sameSite: 'none'
-        }).send();
+            expires: new Date(Date.now() + 3600000) // 1 hora de duración
+          });
 
 
         // const serialized = serialize('tokenUser', token, {
@@ -57,28 +59,29 @@ export const login = async (req, res = response) => {
         //     secure: process.env.NODE_ENV === 'production',
         //     sameSite: 'none',
         //     maxAge: 1000 * 60 * 1,
-        //     path: '/'
+        //     path: '/',
+        //     domain: '.up.railway.app'
         // })
 
         // res.setHeader('Set-Cookie', serialized)
 
-        // return res.json({
-        //     msg: 'Login successfully'
-        // });
+        return res.json({
+            msg: 'Login successfully'
+        });
     } catch (error) {
         return res.status(400).json({message: error.message});
     }
 }
 
 export const getUser = (req, res = response) => {
-    const { tokenUser } = req.cookies;
+    const { token } = req.cookies;
 
-    if(!tokenUser) {
+    if(!token) {
         return res.status(401).json({ msg: 'Unauthorized' })
     }
 
     try {
-        const user = verify(tokenUser, process.env.JWT_SECRET)
+        const user = verify(token, process.env.JWT_SECRET)
         return res.status(200).json(user)
     } catch (error) {
         return res.status(401).json({ msg: 'Invalid token' })
@@ -134,16 +137,25 @@ export const googleSignIn = async (req, res = response) => {
 
         //generate the jwt
         const token = await generateJWT(user);
-
-        const serialized = serialize('tokenUser', token, {
+        res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 1000 * 60 * 60 * 24 * 1,
-            path: '/'
-        })
+            secure: true,
+            sameSite: 'none',
+            domain: 'boatmate-backend-production.up.railway.app',
+            domain: 'localhost',
+            path: '/',
+            expires: new Date(Date.now() + 3600000) // 1 hora de duración
+          });
 
-        res.setHeader('Set-Cookie', serialized)
+        // const serialized = serialize('tokenUser', token, {
+        //     httpOnly: true,
+        //     secure: process.env.NODE_ENV === 'production',
+        //     sameSite: 'lax',
+        //     maxAge: 1000 * 60 * 60 * 24 * 1,
+        //     path: '/'
+        // })
+
+        // res.setHeader('Set-Cookie', serialized)
 
         res.status(200).json({
             msg: 'Login successfully',
@@ -157,22 +169,32 @@ export const googleSignIn = async (req, res = response) => {
 }
 
 export const logout = (req, res = response) => {
-    const { tokenUser } = req.cookies;
+    const { token } = req.cookies;
+    console.log(token)
 
-    if(!tokenUser) {
+    if(!token) {
         return res.status(401).json({ msg: 'Unauthorized' })
     }
 
     try {
-        verify(tokenUser, process.env.JWT_SECRET);
-        const serialized = serialize('tokenUser', null, {
+        verify(token, process.env.JWT_SECRET);
+        res.cookie('token', null, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 0,
-            path: '/'
-        });
-        res.setHeader('Set-Cookie', serialized);
+            secure: true,
+            sameSite: 'none',
+            domain: 'boatmate-backend-production.up.railway.app',
+            domain: 'localhost',
+            path: '/',
+            expires: 0
+          });
+        // const serialized = serialize('tokenUser', null, {
+        //     httpOnly: true,
+        //     secure: process.env.NODE_ENV === 'production',
+        //     sameSite: 'lax',
+        //     maxAge: 0,
+        //     path: '/'
+        // });
+        // res.setHeader('Set-Cookie', serialized);
         res.status(200).json({ msg: 'Logout Successfully' });
     } catch (error) {
         console.log('Error:', error)

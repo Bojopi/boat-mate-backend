@@ -20,6 +20,8 @@ import categoryRoutes from './routes/category.routes.js';
 import customerRoutes from './routes/customer.routes.js';
 import boatRoutes from './routes/boat.routes.js';
 
+const apiRouter = express.Router();
+
 const allowedOrigins = ['http://localhost:3000', 'https://boatmate-frontend.vercel.app'];
 
 const corsOptions = {
@@ -35,7 +37,7 @@ const corsOptions = {
 }
 
 app.use(cors({
-    origin: 'https://boatmate-frontend.vercel.app',
+    origin: allowedOrigins,
     credentials: true
 }));
 app.use(morgan('dev'));
@@ -51,14 +53,16 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.use(rolRoutes);
-app.use(authRoutes);
-app.use(userRoutes);
-app.use(providerRoutes);
-app.use(serviceRoutes);
-app.use(categoryRoutes);
-app.use(customerRoutes);
-app.use(boatRoutes);
+app.use('/api', apiRouter);
+
+apiRouter.use(rolRoutes);
+apiRouter.use(authRoutes);
+apiRouter.use(userRoutes);
+apiRouter.use(providerRoutes);
+apiRouter.use(serviceRoutes);
+apiRouter.use(categoryRoutes);
+apiRouter.use(customerRoutes);
+apiRouter.use(boatRoutes);
 
 
 
