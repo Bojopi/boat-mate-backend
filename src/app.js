@@ -20,8 +20,7 @@ import categoryRoutes from './routes/category.routes.js';
 import customerRoutes from './routes/customer.routes.js';
 import boatRoutes from './routes/boat.routes.js';
 
-// const allowedOrigins = ['http://localhost:3000'];
-const allowedOrigins = ['https://boatmate-frontend.vercel.app/'];
+const allowedOrigins = ['http://localhost:3000', 'https://boatmate-frontend.vercel.app'];
 
 const corsOptions = {
     origin: function(origin, callback) {
@@ -35,14 +34,14 @@ const corsOptions = {
     credentials: true
 }
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser())
 
 
 app.use((err, req, res, next) => {
-    // res.header('Access-Control-Allow-Origin', allowedOrigins[0]);
+    res.header('Access-Control-Allow-Origin', allowedOrigins[0]);
     return res.json({
         message: err.message
     });
