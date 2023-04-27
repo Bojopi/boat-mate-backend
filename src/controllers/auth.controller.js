@@ -44,7 +44,7 @@ export const login = async (req, res = response) => {
         const token = await generateJWT(profile);
 
         const serialized = serialize('tokenUser', token, {
-            httpOnly: true,
+            // httpOnly: true,
             secure: true,
             // secure: process.env.NODE_ENV === 'production',
             sameSite: 'none',
