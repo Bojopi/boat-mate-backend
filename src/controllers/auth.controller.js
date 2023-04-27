@@ -43,7 +43,7 @@ export const login = async (req, res = response) => {
         //generate the jwt
         const token = await generateJWT(profile);
 
-        res.cookie('tokenUser', token, {
+        res.cookie('token', token, {
             httpOnly: true,
             secure: true,
             domain: 'boatmate-backend-production.up.railway.app',
