@@ -44,7 +44,7 @@ export const login = async (req, res = response) => {
         const token = await generateJWT(profile);
 
         res.cookie('tokenUser', token, {
-            domain: '.vercel.app',
+            domain: '.boatmate-frontend.vercel.app',
             path: '/',
             httpOnly: true,
             secure: true,
