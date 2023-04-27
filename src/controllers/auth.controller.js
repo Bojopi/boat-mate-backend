@@ -44,7 +44,7 @@ export const login = async (req, res = response) => {
         const token = await generateJWT(profile);
 
         res.cookie('tokenUser', token, {
-            httpOnly: true,
+            httpOnly: false,
             secure: true,
             sameSite: 'none'
         })
