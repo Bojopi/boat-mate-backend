@@ -48,7 +48,7 @@ export const login = async (req, res = response) => {
             secure: true,
             sameSite: 'none',
             domain: 'boatmate-backend-production.up.railway.app',
-            domain: 'localhost',
+            // domain: 'localhost',
             path: '/',
             expires: new Date(Date.now() + 3600000) // 1 hora de duración
           });
@@ -142,7 +142,7 @@ export const googleSignIn = async (req, res = response) => {
             secure: true,
             sameSite: 'none',
             domain: 'boatmate-backend-production.up.railway.app',
-            domain: 'localhost',
+            // domain: 'localhost',
             path: '/',
             expires: new Date(Date.now() + 3600000) // 1 hora de duración
           });
@@ -183,7 +183,7 @@ export const logout = (req, res = response) => {
             secure: true,
             sameSite: 'none',
             domain: 'boatmate-backend-production.up.railway.app',
-            domain: 'localhost',
+            // domain: 'localhost',
             path: '/',
             expires: 0
           });
