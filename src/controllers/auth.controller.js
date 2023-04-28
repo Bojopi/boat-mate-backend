@@ -60,7 +60,7 @@ export const login = async (req, res = response) => {
             sameSite: 'none',
             maxAge: 1000 * 60 * 1,
             path: '/',
-            domain: '.up.railway.app'
+            domain: '.compute.amazonaws.com'
         })
 
         res.setHeader('Set-Cookie', serialized)
@@ -150,9 +150,10 @@ export const googleSignIn = async (req, res = response) => {
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 1000 * 60 * 60 * 24 * 1,
-            path: '/'
+            sameSite: 'none',
+            maxAge: 1000 * 60 * 1,
+            path: '/',
+            domain: '.compute.amazonaws.com'
         })
 
         res.setHeader('Set-Cookie', serialized)
@@ -187,14 +188,15 @@ export const logout = (req, res = response) => {
         //     path: '/',
         //     expires: 0
         //   });
-        
-        const serialized = serialize('tokenUser', null, {
+
+        const serialized = serialize('tokenUser', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 0,
-            path: '/'
-        });
+            sameSite: 'none',
+            maxAge: 1000 * 60 * 1,
+            path: '/',
+            domain: '.compute.amazonaws.com'
+        })
         res.setHeader('Set-Cookie', serialized);
         res.status(200).json({ msg: 'Logout Successfully' });
     } catch (error) {
