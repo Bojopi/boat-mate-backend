@@ -1,10 +1,10 @@
-import env from 'dotenv';
+
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
-env.config();
+
 const app = express();
 
 //settings
