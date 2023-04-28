@@ -56,7 +56,7 @@ export const login = async (req, res = response) => {
 
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: true,
             sameSite: 'none',
             maxAge: 1000 * 60 * 1,
             path: '/',
@@ -149,7 +149,7 @@ export const googleSignIn = async (req, res = response) => {
 
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: true,
             sameSite: 'none',
             maxAge: 1000 * 60 * 1,
             path: '/',
@@ -191,7 +191,7 @@ export const logout = (req, res = response) => {
 
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: true,
             sameSite: 'none',
             maxAge: 1000 * 60 * 1,
             path: '/',
