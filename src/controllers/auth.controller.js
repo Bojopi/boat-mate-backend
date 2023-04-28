@@ -57,7 +57,7 @@ export const login = async (req, res = response) => {
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'none',
+            sameSite: 'lax',
             maxAge: 1000 * 60 * 1,
             path: '/',
             domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
@@ -150,7 +150,7 @@ export const googleSignIn = async (req, res = response) => {
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'none',
+            sameSite: 'lax',
             maxAge: 1000 * 60 * 1,
             path: '/',
             domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
@@ -192,7 +192,7 @@ export const logout = (req, res = response) => {
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'none',
+            sameSite: 'lax',
             maxAge: 1000 * 60 * 1,
             path: '/',
             domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
