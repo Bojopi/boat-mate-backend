@@ -1,7 +1,5 @@
 import jwt from 'jsonwebtoken'
 
-const jwtSecret = process.env.JWT_SECRET
-
 export const generateJWT = ( profile ) => {
 
     return new Promise((resolve, reject) => {
@@ -34,7 +32,7 @@ export const generateJWT = ( profile ) => {
             role: role_description
         }
 
-        jwt.sign(payload, jwtSecret, { expiresIn: '24h' },
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' },
         (err, token) => {
             if (err) {
                 console.log(err);

@@ -8,8 +8,6 @@ import { serialize } from "cookie"
 import { verify } from "jsonwebtoken";
 import { googleVerify } from "../helpers/google-verify.js";
 
-const jwtSecret = process.env.JWT_SECRET
-
 export const login = async (req, res = response) => {
 
     const { email, password } = req.body;
@@ -83,7 +81,7 @@ export const getUser = (req, res = response) => {
     }
 
     try {
-        const user = verify(token, jwtSecret)
+        const user = verify(token, process.env.JWT_SECRET)
         return res.status(200).json(user)
     } catch (error) {
         return res.status(401).json({ msg: 'Invalid token' })
@@ -179,7 +177,7 @@ export const logout = (req, res = response) => {
     }
 
     try {
-        verify(token, jwtSecret);
+        verify(token, process.env.JWT_SECRET);
         res.cookie('token', null, {
             httpOnly: true,
             secure: true,

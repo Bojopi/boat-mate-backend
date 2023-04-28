@@ -4,13 +4,11 @@ import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
-const dbPort = process.env.PORT
-
 
 const app = express();
 
 //settings
-app.set('port', dbPort || 8080)
+app.set('port', process.env.PORT || 8080)
 
 //routes
 import rolRoutes from './routes/rol.routes.js';
