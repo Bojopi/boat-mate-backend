@@ -43,27 +43,27 @@ export const login = async (req, res = response) => {
         //generate the jwt
         const token = await generateJWT(profile);
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            domain: 'boatmate-backend-production.up.railway.app',
-            // domain: 'localhost',
-            path: '/',
-            expires: new Date(Date.now() + 3600000) // 1 hora de duración
-          });
-
-
-        // const serialized = serialize('tokenUser', token, {
+        // res.cookie('token', token, {
         //     httpOnly: true,
-        //     secure: process.env.NODE_ENV === 'production',
+        //     secure: true,
         //     sameSite: 'none',
-        //     maxAge: 1000 * 60 * 1,
+        //     domain: 'boatmate-backend-production.up.railway.app',
+        //     // domain: 'localhost',
         //     path: '/',
-        //     domain: '.up.railway.app'
-        // })
+        //     expires: new Date(Date.now() + 3600000) // 1 hora de duración
+        //   });
 
-        // res.setHeader('Set-Cookie', serialized)
+
+        const serialized = serialize('tokenUser', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'none',
+            maxAge: 1000 * 60 * 1,
+            path: '/',
+            domain: '.up.railway.app'
+        })
+
+        res.setHeader('Set-Cookie', serialized)
 
         return res.json({
             msg: 'Login successfully'
@@ -137,25 +137,25 @@ export const googleSignIn = async (req, res = response) => {
 
         //generate the jwt
         const token = await generateJWT(user);
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            domain: 'boatmate-backend-production.up.railway.app',
-            // domain: 'localhost',
-            path: '/',
-            expires: new Date(Date.now() + 3600000) // 1 hora de duración
-          });
-
-        // const serialized = serialize('tokenUser', token, {
+        // res.cookie('token', token, {
         //     httpOnly: true,
-        //     secure: process.env.NODE_ENV === 'production',
-        //     sameSite: 'lax',
-        //     maxAge: 1000 * 60 * 60 * 24 * 1,
-        //     path: '/'
-        // })
+        //     secure: true,
+        //     sameSite: 'none',
+        //     domain: 'boatmate-backend-production.up.railway.app',
+        //     // domain: 'localhost',
+        //     path: '/',
+        //     expires: new Date(Date.now() + 3600000) // 1 hora de duración
+        //   });
 
-        // res.setHeader('Set-Cookie', serialized)
+        const serialized = serialize('tokenUser', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 1000 * 60 * 60 * 24 * 1,
+            path: '/'
+        })
+
+        res.setHeader('Set-Cookie', serialized)
 
         res.status(200).json({
             msg: 'Login successfully',
@@ -178,23 +178,24 @@ export const logout = (req, res = response) => {
 
     try {
         verify(token, process.env.JWT_SECRET);
-        res.cookie('token', null, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            domain: 'boatmate-backend-production.up.railway.app',
-            // domain: 'localhost',
-            path: '/',
-            expires: 0
-          });
-        // const serialized = serialize('tokenUser', null, {
+        // res.cookie('token', null, {
         //     httpOnly: true,
-        //     secure: process.env.NODE_ENV === 'production',
-        //     sameSite: 'lax',
-        //     maxAge: 0,
-        //     path: '/'
-        // });
-        // res.setHeader('Set-Cookie', serialized);
+        //     secure: true,
+        //     sameSite: 'none',
+        //     domain: 'boatmate-backend-production.up.railway.app',
+        //     // domain: 'localhost',
+        //     path: '/',
+        //     expires: 0
+        //   });
+        
+        const serialized = serialize('tokenUser', null, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 0,
+            path: '/'
+        });
+        res.setHeader('Set-Cookie', serialized);
         res.status(200).json({ msg: 'Logout Successfully' });
     } catch (error) {
         console.log('Error:', error)
