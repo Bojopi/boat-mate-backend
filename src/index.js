@@ -1,7 +1,6 @@
 import app from './app.js';
 
 import env from 'dotenv';
-
 env.config();
 
 import { sequelize } from './database/database.js';

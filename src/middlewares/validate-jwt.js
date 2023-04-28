@@ -4,6 +4,8 @@ import { Person } from '../models/Person.js';
 import { Role } from '../models/Role.js';
 import { verify } from 'jsonwebtoken';
 
+const jwtSecret = process.env.JWT_SECRET
+
 export const validateJWT = async (req = request, res = response, next) => {
     const { token } = req.cookies;
 
@@ -14,7 +16,7 @@ export const validateJWT = async (req = request, res = response, next) => {
     }
 
     try {
-        const { uid } = verify(token, process.env.JWT_SECRET);
+        const { uid } = verify(token, jwtSecret);
 
         const profile = await Profile.findOne({where: { id_profile: uid }, include: [Person, Role]});
 
