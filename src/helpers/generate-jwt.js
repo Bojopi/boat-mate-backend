@@ -1,11 +1,38 @@
 import jwt from 'jsonwebtoken'
 
-export const generateJWT = ( uid = '' ) => {
+export const generateJWT = ( profile ) => {
 
     return new Promise((resolve, reject) => {
-        const payload = { uid }
+        const {
+        id_profile,
+        email, 
+        profile_state, 
+        person:{
+            dataValues: {
+                person_name,
+                lastname,
+                phone,
+                person_image
+            }
+        },
+        role: {
+            dataValues: {
+                role_description
+            }
+        }} = profile
 
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '4h' },
+        const payload = { 
+            uid:  id_profile,
+            email: email,
+            state: profile_state,
+            name: person_name,
+            lastname: lastname,
+            phone: phone,
+            image: person_image,
+            role: role_description
+        }
+
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' },
         (err, token) => {
             if (err) {
                 console.log(err);

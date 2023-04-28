@@ -9,13 +9,16 @@ export const Profile = sequelize.define('profiles', {
         primaryKey: true,
         autoIncrement: true
     },
-    username: {
+    email: {
         type: DataTypes.STRING,
     },
     password: {
         type: DataTypes.STRING
     },
-    state: {
+    profile_state: {
+        type: DataTypes.BOOLEAN,
+    },
+    google: {
         type: DataTypes.BOOLEAN,
     }
 }, {

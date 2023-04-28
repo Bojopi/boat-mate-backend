@@ -1,5 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
+import { Category } from "./Category.js";
+import { ServiceCategories } from "./ServiceCategories.js";
 
 export const Service = sequelize.define('services', {
     id_service: {
@@ -7,16 +9,28 @@ export const Service = sequelize.define('services', {
         primaryKey: true,
         autoIncrement: true
     },
-    detail: {
+    service_name: {
         type: DataTypes.STRING,
     },
-    type: {
+    service_description: {
         type: DataTypes.STRING
-    },
-    cost: {
-        type: DataTypes.FLOAT
-    },
+    }
 }, {
     timestamps: false
 });
+
+
+Service.belongsToMany(Category, { 
+    through: ServiceCategories,
+    uniqueKey: 'serviceId',
+    foreignKey: 'serviceId',
+});
+
+Category.belongsToMany(Service, { 
+    through: ServiceCategories, 
+    uniqueKey: 'categoryId',
+    foreignKey: 'categoryId',
+});
+
+
 

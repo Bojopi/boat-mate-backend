@@ -1,27 +1,26 @@
 CREATE DATABASE boatmate
 
-CREATE TABLE role(
+CREATE TABLE roles(
     id_role serial primary key,
     description_role varchar(15)
 );
 
-CREATE TABLE profile(
-	id_profile serial primary key,
-	username varchar(20),
-	password varchar(255),
-	state boolean,
-	id_role serial,
-	foreign key (id_role) references role(id_role)
-);
-
-CREATE TABLE person(
+CREATE TABLE people(
 	id_person serial primary key,
 	name varchar(30),
 	lastname varchar(30),
 	mail varchar(50),
 	phone varchar(30),
 	id_profile serial,
-	foreign key (id_profile) references profile(id_profile)
+);
+
+CREATE TABLE profiles(
+	id_profile serial primary key,
+	username varchar(20),
+	password varchar(255),
+	state boolean,
+	id_role serial,
+	foreign key (id_role) references role(id_role)
 );
 
 CREATE TABLE provider(
@@ -92,41 +91,81 @@ DATABASE_URL=postgres://boatmate:5hP5e6O2oIoiGzH@boatmatepostgres.flycast:5432/b
 /* Datos para rellenar */
 
 --Roles
-INSERT INTO roles(description_role) VALUES ('ADMIN');
-INSERT INTO roles(description_role) VALUES ('PROVIDER');
-INSERT INTO roles(description_role) VALUES ('CUSTOMER');
+INSERT INTO roles(role_description) VALUES ('ADMIN');
+INSERT INTO roles(role_description) VALUES ('SUPERADMIN');
+INSERT INTO roles(role_description) VALUES ('PROVIDER');
+INSERT INTO roles(role_description) VALUES ('CUSTOMER');
 
 --People
-INSERT INTO people(name, lastname, email, phone) VALUES ('John', 'Due', 'john@gmail.com', '63792382');
-INSERT INTO people(name, lastname, email, phone) VALUES ('Martha', 'Jackson', 'martha@gmail.com', '63792382');
-INSERT INTO people(name, lastname, email, phone) VALUES ('Juan', 'Perez', 'juan@gmail.com', '63792382');
-INSERT INTO people(name, lastname, email, phone) VALUES ('Ana', 'Rojas', 'ana@gmail.com', '63792382');
+INSERT INTO people(person_name, lastname, phone, person_image) VALUES ('Chris', 'Cooper', '63792382', 'https://primefaces.org/cdn/primereact/images/avatar/ivanmagalhaes.png');
+INSERT INTO people(person_name, lastname, phone, person_image) VALUES ('Martha', 'Jackson', '63792382', null);
+INSERT INTO people(person_name, lastname, phone, person_image) VALUES ('Juan', 'Perez', '63792382', 'https://primefaces.org/cdn/primereact/images/avatar/elwinsharvill.png');
+INSERT INTO people(person_name, lastname, phone, person_image) VALUES ('Ana', 'Rojas', '63792382', 'https://primefaces.org/cdn/primereact/images/avatar/annafali.png');
+
+--Categories
+INSERT INTO categories(category_name) VALUES ('Maintenance & Repair');
+INSERT INTO categories(category_name) VALUES ('Electronics');
+INSERT INTO categories(category_name) VALUES ('Boat Detailing');
+INSERT INTO categories(category_name) VALUES ('Hull Cleaning');
+INSERT INTO categories(category_name) VALUES ('Bottom Painting');
+INSERT INTO categories(category_name) VALUES ('Sound & Entertainment');
+
+--Services
+INSERT INTO services(service_name, service_description) VALUES ('Hull Cleaning', 'boats');
+INSERT INTO services(service_name, service_description) VALUES ('Fiberglass Repair', 'jetskis');
+INSERT INTO services(service_name, service_description) VALUES ('Seat Repair', 'jetskis');
+INSERT INTO services(service_name, service_description) VALUES ('Paint Job', 'jetskis');
+INSERT INTO services(service_name, service_description) VALUES ('Propellers', 'boats');
+INSERT INTO services(service_name, service_description) VALUES ('Entertainment', 'boats');
 
 --Profiles
-INSERT INTO profiles(username, password, state, "roleId", "personId") VALUES ('jdue', '$2a$12$UTV6djqkgNkcBsuJFmrK/OtsUstoiHFZH5gEBnRhKuwg.p/x3F1qS', true, 1, 1);
-INSERT INTO profiles(username, password, state, "roleId", "personId") VALUES ('mjackson', '$2a$12$UTV6djqkgNkcBsuJFmrK/OtsUstoiHFZH5gEBnRhKuwg.p/x3F1qS', true, 2, 2);
-INSERT INTO profiles(username, password, state, "roleId", "personId") VALUES ('jperez', '123456', true, 3, 3);
-INSERT INTO profiles(username, password, state, "roleId", "personId") VALUES ('arojas', '123456', true, 3, 4);
+INSERT INTO profiles(email, password, profile_state, google, "roleId", "personId") VALUES ('chris@gmail.com', '$2a$12$UTV6djqkgNkcBsuJFmrK/OtsUstoiHFZH5gEBnRhKuwg.p/x3F1qS', true, false, 2, 1);
+INSERT INTO profiles(email, password, profile_state, google, "roleId", "personId") VALUES ('martha@gmail.com', '$2a$12$UTV6djqkgNkcBsuJFmrK/OtsUstoiHFZH5gEBnRhKuwg.p/x3F1qS', true, false, 1, 2);
+INSERT INTO profiles(email, password, profile_state, google, "roleId", "personId") VALUES ('juan@gmail.com', '123456', true, false, 4, 3);
+INSERT INTO profiles(email, password, profile_state, google, "roleId", "personId") VALUES ('ana@gmail.com', '123456', false, false, 3, 4);
 
 --Customers
-INSERT INTO customers(image, position, service, "profileId") VALUES ('https://i.postimg.cc/dtRVYfdj/benjamin-grull-t-Z78-Ef-WSW8-Q-unsplash.jpg', '(1, 1)', 'Servicio 1', 3);
-INSERT INTO customers(image, position, service, "profileId") VALUES ('https://i.postimg.cc/dtRVYfdj/benjamin-grull-t-Z78-Ef-WSW8-Q-unsplash.jpg', '(1, 1)', 'Servicio 2', 4);
-
---Providers
-INSERT INTO providers(image, postal, description, position, "profileId") VALUES ('https://i.postimg.cc/dtRVYfdj/benjamin-grull-t-Z78-Ef-WSW8-Q-unsplash.jpg', '1234', 'description', '(1, 1)', 2);
+INSERT INTO customers(customer_position, "profileId") VALUES ('(1, 1)', 3);
 
 --Boats
-INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, position, "customerId") VALUES ('Fishing', 'Model1', 'Alerion', 'Model1', 'Model1', 2015, '5', '(1, 1)', 1);
-INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, position, "customerId") VALUES ('Barge', 'Model2', 'Aquila', 'Model2', 'Model2', 2015, '5', '(1, 1)', 2);
-INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, position, "customerId") VALUES ('Yach', 'Model3', 'Catalina', 'Model3', 'Model3', 2015, '5', '(1, 1)', 1);
+INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, boat_position, "customerId") VALUES ('Fishing', 'Model1', 'Alerion', 'Model1', 'Model1', 2015, '5', '(1, 1)', 1);
+INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, boat_position, "customerId") VALUES ('Barge', 'Model2', 'Aquila', 'Model2', 'Model2', 2015, '5', '(1, 1)', 1);
+INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, boat_position, "customerId") VALUES ('Yach', 'Model3', 'Catalina', 'Model3', 'Model3', 2015, '5', '(1, 1)', 1);
+
+--Providers
+INSERT INTO providers(provider_name, provider_image, zip, provider_description, provider_position, "profileId") VALUES ('boat_bussiness', 'https://i.postimg.cc/05MJFs4y/logo-no-background.png', '1234', 'description', '(1, 1)', 4);
 
 --Schedules
 INSERT INTO schedules(start_hour, end_hour, "providerId") VALUES ('08:00', '12:00', 1);
 INSERT INTO schedules(start_hour, end_hour, "providerId") VALUES ('14:00', '18:00', 1);
 
+--Portofolios
+INSERT INTO portofolios(portofolio_image, portofolio_description, "providerId") VALUES ('https://i.postimg.cc/dtRVYfdj/benjamin-grull-t-Z78-Ef-WSW8-Q-unsplash.jpg', 'description', 1);
 
---Services
-INSERT INTO services(detail, type, cost, "providerId") VALUES ('detail service 1', 'type 1', 190.30, 1);
-INSERT INTO services(detail, type, cost, "providerId") VALUES ('detail service 2', 'type 2', 234.89, 1);
-INSERT INTO services(detail, type, cost, "providerId") VALUES ('detail service 3', 'type 3', 38.12, 1);
-INSERT INTO services(detail, type, cost, "providerId") VALUES ('detail service 4', 'type 4', 2000.50, 1);
+--ServiceProvider
+INSERT INTO service_providers("serviceIdService", "providerIdProvider", price) VALUES (1, 1, 155.90);
+INSERT INTO service_providers("serviceIdService", "providerIdProvider", price) VALUES (3, 1, 290.10);
+INSERT INTO service_providers("serviceIdService", "providerIdProvider", price) VALUES (6, 1, 399.90);
+
+--Ratings
+INSERT INTO ratings(rating, review, "serviceProviderId", "customerId") VALUES (5, 'The best service', 1, 1);
+INSERT INTO ratings(rating, review, "serviceProviderId", "customerId") VALUES (2, 'Not very good service', 2, 1);
+INSERT INTO ratings(rating, review, "serviceProviderId", "customerId") VALUES (3, 'Not very good service', 3, 1);
+
+--Contracts
+INSERT INTO contracts("serviceProviderId", "customerId", date, contract_state, contract_description) VALUES (1, 1, '2023-04-25', 'APPROVED', 'description 1');
+INSERT INTO contracts("serviceProviderId", "customerId", date, contract_state, contract_description) VALUES (2, 1, '2023-04-13', 'APPROVED', 'description 2');
+INSERT INTO contracts("serviceProviderId", "customerId", date, contract_state, contract_description) VALUES (3, 1, '2023-04-02', 'APPROVED', 'description 3');
+
+--ServiceCategories
+INSERT INTO service_categories("serviceId", "categoryId") VALUES (1, 4);
+INSERT INTO service_categories("serviceId", "categoryId") VALUES (2, 1);
+INSERT INTO service_categories("serviceId", "categoryId") VALUES (3, 1);
+INSERT INTO service_categories("serviceId", "categoryId") VALUES (4, 5);
+INSERT INTO service_categories("serviceId", "categoryId") VALUES (5, 3);
+INSERT INTO service_categories("serviceId", "categoryId") VALUES (6, 6);
+
+--ServicePreferences
+INSERT INTO service_preferences("serviceId", "customerId") VALUES (1, 1);
+INSERT INTO service_preferences("serviceId", "customerId") VALUES (3, 1);
+INSERT INTO service_preferences("serviceId", "customerId") VALUES (5, 1);

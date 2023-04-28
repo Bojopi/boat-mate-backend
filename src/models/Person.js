@@ -8,18 +8,18 @@ export const Person = sequelize.define('person', {
         primaryKey: true,
         autoIncrement: true
     },
-    name: {
+    person_name: {
         type: DataTypes.STRING,
     },
     lastname: {
         type: DataTypes.STRING
     },
-    email: {
-        type: DataTypes.STRING,
-    },
     phone: {
         type: DataTypes.STRING,
     },
+    person_image: {
+        type: DataTypes.STRING,
+    }
 }, {
     timestamps: false
 })

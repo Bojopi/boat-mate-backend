@@ -1,15 +1,13 @@
 import { Router } from 'express';
-import { getAllRoles, getRole } from "../controllers/rol.controller.js";
+import { getAllProviders } from '../controllers/provider.controller.js';
 import { validateJWT } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
 
 const router = Router();
 
-router.get('/roles', [
+router.get('/providers', [
     validateJWT,
     validateRol('ADMIN', 'SUPERADMIN')
-], getAllRoles);
-
-router.get('/roles/:id', getRole)
+], getAllProviders);
 
 export default router;
