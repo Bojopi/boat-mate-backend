@@ -60,7 +60,7 @@ export const login = async (req, res = response) => {
             sameSite: 'none',
             maxAge: 1000 * 60 * 1,
             path: '/',
-            domain: '.compute.amazonaws.com'
+            domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
         })
 
         res.setHeader('Set-Cookie', serialized)
@@ -153,7 +153,7 @@ export const googleSignIn = async (req, res = response) => {
             sameSite: 'none',
             maxAge: 1000 * 60 * 1,
             path: '/',
-            domain: '.compute.amazonaws.com'
+            domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
         })
 
         res.setHeader('Set-Cookie', serialized)
@@ -195,7 +195,7 @@ export const logout = (req, res = response) => {
             sameSite: 'none',
             maxAge: 1000 * 60 * 1,
             path: '/',
-            domain: '.compute.amazonaws.com'
+            domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
         })
         res.setHeader('Set-Cookie', serialized);
         res.status(200).json({ msg: 'Logout Successfully' });
