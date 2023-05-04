@@ -125,15 +125,15 @@ INSERT INTO profiles(email, password, profile_state, google, "roleId", "personId
 INSERT INTO profiles(email, password, profile_state, google, "roleId", "personId") VALUES ('ana@gmail.com', '123456', false, false, 3, 4);
 
 --Customers
-INSERT INTO customers(customer_position, "profileId") VALUES ('(1, 1)', 3);
+INSERT INTO customers(customer_lat, customer_lng, "profileId") VALUES ('-17.75157101539973', '-63.185461568261296', 3);
 
 --Boats
-INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, boat_position, "customerId") VALUES ('Fishing', 'Model1', 'Alerion', 'Model1', 'Model1', 2015, '5', '(1, 1)', 1);
-INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, boat_position, "customerId") VALUES ('Barge', 'Model2', 'Aquila', 'Model2', 'Model2', 2015, '5', '(1, 1)', 1);
-INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, boat_position, "customerId") VALUES ('Yach', 'Model3', 'Catalina', 'Model3', 'Model3', 2015, '5', '(1, 1)', 1);
+INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, boat_lat, boat_lng, "customerId") VALUES ('Fishing', 'Model1', 'Alerion', 'Model1', 'Model1', 2015, '5', '-17.75157101539973', '-63.185461568261296', 1);
+INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, boat_lat, boat_lng, "customerId") VALUES ('Barge', 'Model2', 'Aquila', 'Model2', 'Model2', 2015, '5', '-17.75157101539973', '-63.185461568261296', 1);
+INSERT INTO boats(type, model, brand, brand_motor, model_motor, year, length, boat_lat, boat_lng, "customerId") VALUES ('Yach', 'Model3', 'Catalina', 'Model3', 'Model3', 2015, '5', '-17.75157101539973', '-63.185461568261296', 1);
 
 --Providers
-INSERT INTO providers(provider_name, provider_image, zip, provider_description, provider_position, "profileId") VALUES ('boat_bussiness', 'https://i.postimg.cc/05MJFs4y/logo-no-background.png', '1234', 'description', '(1, 1)', 4);
+INSERT INTO providers(provider_name, provider_image, zip, provider_description, provider_lat, provider_lng, "profileId") VALUES ('boat_bussiness', 'https://i.postimg.cc/05MJFs4y/logo-no-background.png', '1234', 'description', '-17.75157101539973', '-63.185461568261296', 4);
 
 --Schedules
 INSERT INTO schedules(start_hour, end_hour, "providerId") VALUES ('08:00', '12:00', 1);
