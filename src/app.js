@@ -3,7 +3,7 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
+import fileUpload from 'express-fileupload';
 
 const app = express();
 
@@ -19,22 +19,14 @@ import serviceRoutes from './routes/service.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import customerRoutes from './routes/customer.routes.js';
 import boatRoutes from './routes/boat.routes.js';
+import ratingRoutes from './routes/rating.routes.js';
+import mediaRoutes from './routes/media.routes.js';
+import profileRoutes from './routes/profile.routes.js';
+import portofolioRoutes from './routes/portofolio.routes.js';
 
 const apiRouter = express.Router();
 
 const allowedOrigins = ['http://localhost:3000', 'https://boatmate-frontend.vercel.app', 'http://ec2-3-131-141-161.us-east-2.compute.amazonaws.com'];
-
-const corsOptions = {
-    origin: function(origin, callback) {
-        if(!origin) return callback(null, true);
-        if(allowedOrigins.indexOf(origin) === -1) {
-            var msg = 'The CORS policy this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true)
-    },
-    credentials: true
-}
 
 app.use(cors({
     origin: allowedOrigins,
@@ -53,6 +45,12 @@ app.use((err, req, res, next) => {
     });
 });
 
+//upload images
+app.use(fileUpload({
+    useTempFiles : true,
+    tempFileDir : './src/uploads'
+}));
+
 app.use('/api', apiRouter);
 
 apiRouter.use(rolRoutes);
@@ -63,6 +61,10 @@ apiRouter.use(serviceRoutes);
 apiRouter.use(categoryRoutes);
 apiRouter.use(customerRoutes);
 apiRouter.use(boatRoutes);
+apiRouter.use(ratingRoutes);
+apiRouter.use(mediaRoutes);
+apiRouter.use(profileRoutes);
+apiRouter.use(portofolioRoutes);
 
 
 

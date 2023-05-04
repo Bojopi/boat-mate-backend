@@ -24,7 +24,10 @@ export const Provider = sequelize.define('providers', {
     provider_description: {
         type: DataTypes.STRING
     },
-    provider_position: {
+    provider_lat: {
+        type: DataTypes.STRING,
+    },
+    provider_lng: {
         type: DataTypes.STRING,
     },
 }, {

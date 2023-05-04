@@ -1,8 +1,9 @@
+import { response } from "express";
 import { Person } from "../models/Person.js";
 import { Profile } from "../models/Profile.js";
 import { Provider } from "../models/Provider.js";
 
-export const getAllProviders = async (req, res) => {
+export const getAllProviders = async (req, res = response) => {
     try {
         const providers = await Provider.findAll({
             attributes: ['id_provider', 'provider_name', 'provider_description', 'zip', 'provider_image', 'profile.email', 'profile.person.phone'],

@@ -13,7 +13,10 @@ export const Customer = sequelize.define('customers', {
         primaryKey: true,
         autoIncrement: true
     },
-    customer_position: {
+    customer_lat: {
+        type: DataTypes.STRING
+    },
+    customer_lng: {
         type: DataTypes.STRING
     },
 }, {

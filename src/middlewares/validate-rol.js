@@ -23,7 +23,7 @@ export const validateRol = (...roles) => {
         if(!req.profile) {
             return res.status(500).json({ msg: "Token invalid" });
         }
-
+        
         const {
             role: {role_description},
         } = req.profile;

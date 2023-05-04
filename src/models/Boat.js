@@ -29,9 +29,12 @@ export const Boat = sequelize.define('boats', {
     length: {
         type: DataTypes.STRING(10),
     },
-    boat_position: {
+    boat_lat: {
         type: DataTypes.STRING,
-    }
+    },
+    boat_lng: {
+        type: DataTypes.STRING,
+    },
 }, {
     timestamps: false
 });
