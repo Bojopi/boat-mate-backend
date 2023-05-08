@@ -165,6 +165,7 @@ export const login = async (req, res = response) => {
             sameSite: 'lax',
             maxAge: 1000 * 60 * 1,
             path: '/',
+            domain: 'v2.boatmate.com'
             // domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
         })
 
