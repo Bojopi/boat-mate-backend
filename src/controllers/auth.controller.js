@@ -53,7 +53,7 @@ export const login = async (req, res = response) => {
         //if profile is active
         if(!profile.profile_state) {
             return res.status(400).json({
-                msg: 'Incorrect Email / Password'
+                msg: 'Profile is inactive'
             });
         }
 
