@@ -161,7 +161,7 @@ export const login = async (req, res = response) => {
 
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: 'lax',
             maxAge: 1000 * 60 * 1,
             path: '/',
