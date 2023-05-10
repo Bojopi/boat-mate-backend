@@ -240,7 +240,7 @@ export const googleSignIn = async (req, res = response) => {
             sameSite: 'lax',
             maxAge: 1000 * 60 * 1,
             path: '/',
-            domain: 'v2.boatmate.com'
+            // domain: 'v2.boatmate.com'
         })
 
         res.setHeader('Set-Cookie', serialized)
@@ -273,7 +273,7 @@ export const logout = (req, res = response) => {
             sameSite: 'lax',
             maxAge: 1000 * 60 * 1,
             path: '/',
-            domain: 'v2.boatmate.com'
+            // domain: 'v2.boatmate.com'
         })
         res.setHeader('Set-Cookie', serialized);
         res.status(200).json({ msg: 'Logout Successfully' });
