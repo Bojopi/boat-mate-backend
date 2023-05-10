@@ -57,11 +57,13 @@ Service.belongsToMany(Customer, {
 
 Customer.belongsToMany(ServiceProviders, {
     through: Contract,
-    uniqueKey: 'customerId',
-    foreignKey: 'customerId'
 });
 ServiceProviders.belongsToMany(Customer, {
     through: Contract,
-    uniqueKey: 'serviceProviderId',
-    foreignKey: 'serviceProviderId'
 });
+
+ServiceProviders.hasMany(Contract);
+Contract.belongsTo(ServiceProviders);
+
+Customer.hasMany(Contract);
+Contract.belongsTo(Customer);

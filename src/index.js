@@ -24,7 +24,7 @@ import './models/ServiceProviders.js';
 
 const connect = async () => {
     try {
-        // await sequelize.sync({force: true})
+        // await sequelize.sync({alter: true})
         app.listen(app.get('port'))
         console.log('listening on port 8080');
     } catch (error) {

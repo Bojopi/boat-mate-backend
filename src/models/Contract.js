@@ -2,19 +2,10 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
 
 export const Contract = sequelize.define('contracts', {
-    serviceProviderId: {
+    id_contract: {
         type: DataTypes.INTEGER,
-        references: {
-            model: 'service_providers',
-            key: 'id_service_provider'
-        }
-    },
-    customerId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'customers',
-            key: 'id_customer'
-        }
+        primaryKey: true,
+        autoIncrement: true
     },
     date: {
         type: DataTypes.DATE,

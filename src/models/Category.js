@@ -1,5 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
+import { Service } from "./Service.js";
+import { ServiceCategories } from "./ServiceCategories.js";
 
 export const Category = sequelize.define('categories', {
     id_category: {

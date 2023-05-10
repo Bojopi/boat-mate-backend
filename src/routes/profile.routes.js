@@ -1,12 +1,19 @@
 import { Router } from 'express';
 import { validateJWT } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
-import { setDataProfile } from '../controllers/profile.controller.js';
+import { deleteProfile, getUsersAll, setDataProfile, setRoleUser } from '../controllers/profile.controller.js';
 
 const router = Router();
 
-router.post('/profile/:id', [
+router.post('/profiles', [
     validateJWT,
-], setDataProfile);
+    validateRol('ADMIN', 'SUPERADMIN')
+], getUsersAll);
+router.post('/profile/:id', [ validateJWT ], setDataProfile);
+router.post('/profile-role/:id', [ validateJWT ] , setRoleUser);
+router.post('/delete-profile/:idProfile', [
+    validateJWT,
+    validateRol('ADMIN', 'SUPERADMIN')
+], deleteProfile)
 
 export default router;

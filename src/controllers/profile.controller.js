@@ -3,12 +3,43 @@ import { Person } from "../models/Person.js";
 import { Profile } from "../models/Profile.js";
 import { Provider } from "../models/Provider.js";
 import { Customer } from "../models/Customer.js";
-import { searchImage, uploadImage } from "../utils/cloudinary.js";
+import { deleteImage, searchImage, uploadImage } from "../utils/cloudinary.js";
 import { sequelize } from "../database/database.js";
 import { decryptPassword, encriptPassword } from "../utils/bcryp.js";
 import { updateJWT } from "../helpers/generate-jwt.js";
 import { serialize } from "cookie";
 import { Role } from "../models/Role.js";
+import fs from 'fs'
+import path from "path";
+
+export const getUsersAll = async (req, res = response) => {
+
+    try {
+        const users = await Profile.findAll({
+            include: [Person, Role],
+            order: [
+                [Person, 'person_name', 'ASC']
+            ]
+        });
+        res.status(200).json({users})
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+}
+
+export const setRoleUser = async (req, res = response) => {
+    const { id } = req.params;
+    const { role } = req.body;
+    try {
+        await Profile.update(
+            {roleId: role},
+            {where: {id_profile: id}}
+        );
+        res.status(200).json({ role, msg: 'Role updated successfully'});
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+}
 
 export const setDataProfile = async (req, res = response) => {
 
@@ -29,9 +60,9 @@ export const setDataProfile = async (req, res = response) => {
 
     let providerImage, personImage, providerId, customerId, resUser;
     if(req.files != null) {
-        const {providerImage, personImage} = req.files;
-        providerImage = providerImage;
-        personImage = personImage;
+        const {providerImage: provImg, personImage: perImg} = req.files;
+        providerImage = provImg;
+        personImage = perImg;
     }
 
     const { id } = req.params;
@@ -39,9 +70,14 @@ export const setDataProfile = async (req, res = response) => {
     let updateData = {};
 
     //search profile
-    const {personId, roleId, password: pass} = await Profile.findOne({
-        attributes: ['id_profile', 'personId', 'roleId', 'password'],
-        where: {id_profile: id}
+    const {personId, roleId, password: pass, person_image} = await Profile.findOne({
+        attributes: ['id_profile', 'personId', 'roleId', 'password', 'person.person_image'],
+        where: {id_profile: id},
+        include: [{
+            model: Person,
+            attributes: []
+        }],
+        raw: true
     });
 
     if(name != null || name != '') updateData.person_name = name;
@@ -59,12 +95,12 @@ export const setDataProfile = async (req, res = response) => {
     }
     if(phone != null || phone != '') updateData.phone = phone;
     if(state != null || state != '') updateData.profile_state = state == 'true' || state == 1 ? true : false;
-    if(personImage != null && personImage != undefined) {
-        const imageExist = await searchImage(personImage);
-        if(!imageExist) {
+    if(personImage != null && personImage != undefined && person_image != '' && person_image != null) {
+        const resDelete = await deleteImage(person_image);
+        if(resDelete) {
             const result = await uploadImage(personImage.tempFilePath);
             updateData.person_image = result.secure_url;
-            await fs.unlink(personImage.tempFilePath)
+            fs.unlinkSync(path.join(personImage.tempFilePath));
         }
     }
 
@@ -81,8 +117,8 @@ export const setDataProfile = async (req, res = response) => {
         if(lng != null || lng != '') updateData.customer_lng = lng;
 
     } else if(roleId == 3) {
-        const {id_provider} = await Provider.findOne({
-            attributes: ['id_provider'],
+        const {id_provider, provider_image} = await Provider.findOne({
+            attributes: ['id_provider', 'provider_image'],
             where: {profileId: id}
         });
 
@@ -94,12 +130,12 @@ export const setDataProfile = async (req, res = response) => {
         if(lat != null || lat != '') updateData.provider_lat = lat;
         if(lng != null || lng != '') updateData.provider_lng = lng;
 
-        if(providerImage != null && providerImage != undefined) {
-            const imageExist = await searchImage(providerImage);
-            if(!imageExist) {
+        if(providerImage != null && providerImage != undefined && provider_image != null && provider_image != '') {
+            const resDelete = await deleteImage(provider_image);
+            if(resDelete) {
                 const result = await uploadImage(providerImage.tempFilePath);
                 updateData.provider_image = result.secure_url;
-                await fs.unlink(providerImage.tempFilePath)
+                fs.unlinkSync(path.join(providerImage.tempFilePath));
             }
         }
     }
@@ -250,6 +286,26 @@ export const setDataProfile = async (req, res = response) => {
         res.status(200).json({ msg: 'Correctly updated' });
     } catch (error) {
         return res.status(400).json({msg: error.message});
+    }
+}
+
+export const deleteProfile = async (req, res = response) => {
+    const { idProfile } = req.params;
+
+    try {
+        await Profile.update({
+            profile_state: false
+        }, {
+            where: {id_profile: idProfile}
+        })
+
+        res.status(200).json({
+            msg: `Profile deleted`
+        });
+    } catch (error) {
+        return res.status(400).json({
+            msg: error.message
+        })
     }
 }
 

@@ -13,7 +13,6 @@ app.set('port', process.env.PORT || 8080)
 //routes
 import rolRoutes from './routes/rol.routes.js';
 import authRoutes from './routes/auth.routes.js';
-import userRoutes from './routes/user.routes.js';
 import providerRoutes from './routes/provider.routes.js';
 import serviceRoutes from './routes/service.routes.js';
 import categoryRoutes from './routes/category.routes.js';
@@ -58,7 +57,6 @@ app.use('/api', apiRouter);
 
 apiRouter.use(rolRoutes);
 apiRouter.use(authRoutes);
-apiRouter.use(userRoutes);
 apiRouter.use(providerRoutes);
 apiRouter.use(serviceRoutes);
 apiRouter.use(categoryRoutes);

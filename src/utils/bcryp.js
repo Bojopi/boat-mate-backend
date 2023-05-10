@@ -2,7 +2,7 @@ import bcryptjs from 'bcrypt'
 
 export const encriptPassword = async (password) => {
     try {
-        const resHash = await bcryptjs.hashSync(password, 12);
+        const resHash = bcryptjs.hashSync(password, 12);
         return resHash;
     } catch (error) {
         console.error(error)

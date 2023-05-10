@@ -55,33 +55,21 @@ Portofolio.belongsTo(Provider, {
 });
 
 
-Provider.belongsToMany(Service, { 
-    through: ServiceProviders, 
-    // uniqueKey: 'providerId',
-    // foreignKey: 'providerId'
-});
-Service.belongsToMany(Provider, { 
+Provider.belongsToMany(Service, {
     through: ServiceProviders,
-    // uniqueKey: 'serviceId',
-    // foreignKey: 'serviceId'
+});
+Service.belongsToMany(Provider, {
+    through: ServiceProviders,
 });
 
 
 Service.hasMany(ServiceProviders, {
-    // foreignkey: 'serviceId',
-    // sourceKey: 'id_service'
 });
 ServiceProviders.belongsTo(Service, {
-    // foreignKey: 'serviceId',
-    // targetKey: 'id_service'
 });
 
 
 Provider.hasMany(ServiceProviders, {
-    // foreignkey: 'providerId',
-    // sourceKey: 'id_provider',
 });
 ServiceProviders.belongsTo(Provider, {
-    // foreignKey: 'providerId',
-    // targetKey: 'id_provider'
 });

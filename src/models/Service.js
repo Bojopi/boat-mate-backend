@@ -33,4 +33,19 @@ Category.belongsToMany(Service, {
 });
 
 
+Category.belongsToMany(Service, {
+    through: ServiceCategories,
+});
+Service.belongsToMany(Category, {
+    through: ServiceCategories,
+});
+
+
+Service.hasMany(ServiceCategories);
+ServiceCategories.belongsTo(Service);
+
+
+Category.hasMany(ServiceCategories);
+ServiceCategories.belongsTo(Category);
+
 
