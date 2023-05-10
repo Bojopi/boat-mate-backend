@@ -153,9 +153,9 @@ INSERT INTO ratings(rating, review, "serviceProviderId", "customerId") VALUES (2
 INSERT INTO ratings(rating, review, "serviceProviderId", "customerId") VALUES (3, 'Not very good service', 3, 1);
 
 --Contracts
-INSERT INTO contracts("serviceProviderId", "customerId", date, contract_state, contract_description) VALUES (1, 1, '2023-04-25', 'APPROVED', 'description 1');
-INSERT INTO contracts("serviceProviderId", "customerId", date, contract_state, contract_description) VALUES (2, 1, '2023-04-13', 'APPROVED', 'description 2');
-INSERT INTO contracts("serviceProviderId", "customerId", date, contract_state, contract_description) VALUES (3, 1, '2023-04-02', 'APPROVED', 'description 3');
+INSERT INTO contracts("serviceProviderIdServiceProvider", "customerIdCustomer", date, contract_state, contract_description) VALUES (1, 1, '2023-04-25', 'APPROVED', 'description 1');
+INSERT INTO contracts("serviceProviderIdServiceProvider", "customerIdCustomer", date, contract_state, contract_description) VALUES (2, 1, '2023-04-13', 'APPROVED', 'description 2');
+INSERT INTO contracts("serviceProviderIdServiceProvider", "customerIdCustomer", date, contract_state, contract_description) VALUES (3, 1, '2023-04-02', 'APPROVED', 'description 3');
 
 --ServiceCategories
 INSERT INTO service_categories("serviceId", "categoryId") VALUES (1, 4);

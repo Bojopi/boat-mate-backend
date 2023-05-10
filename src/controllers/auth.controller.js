@@ -9,6 +9,8 @@ import { verify } from "jsonwebtoken";
 import { googleVerify } from "../helpers/google-verify.js";
 import { Provider } from "../models/Provider.js";
 import { Customer } from "../models/Customer.js";
+import { encriptPassword } from "../utils/bcryp.js";
+import { sequelize } from "../database/database.js";
 
 export const login = async (req, res = response) => {
 
@@ -148,25 +150,13 @@ export const login = async (req, res = response) => {
         //generate the jwt
         const token = await generateJWT(profile);
 
-        // res.cookie('token', token, {
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite: 'none',
-        //     domain: 'boatmate-backend-production.up.railway.app',
-        //     // domain: 'localhost',
-        //     path: '/',
-        //     expires: new Date(Date.now() + 3600000) // 1 hora de duración
-        //   });
-
-
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
             secure: false,
             sameSite: 'lax',
             maxAge: 1000 * 60 * 1,
             path: '/',
-            domain: 'v2.boatmate.com'
-            // domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
+            // domain: 'v2.boatmate.com'
         })
 
         res.setHeader('Set-Cookie', serialized)
@@ -243,23 +233,14 @@ export const googleSignIn = async (req, res = response) => {
 
         //generate the jwt
         const token = await generateJWT(user);
-        // res.cookie('token', token, {
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite: 'none',
-        //     domain: 'boatmate-backend-production.up.railway.app',
-        //     // domain: 'localhost',
-        //     path: '/',
-        //     expires: new Date(Date.now() + 3600000) // 1 hora de duración
-        //   });
 
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: 'lax',
             maxAge: 1000 * 60 * 1,
             path: '/',
-            // domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
+            domain: 'v2.boatmate.com'
         })
 
         res.setHeader('Set-Cookie', serialized)
@@ -285,23 +266,14 @@ export const logout = (req, res = response) => {
 
     try {
         verify(tokenUser, process.env.JWT_SECRET);
-        // res.cookie('token', null, {
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite: 'none',
-        //     domain: 'boatmate-backend-production.up.railway.app',
-        //     // domain: 'localhost',
-        //     path: '/',
-        //     expires: 0
-        //   });
 
         const serialized = serialize('tokenUser', tokenUser, {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: 'lax',
             maxAge: 1000 * 60 * 1,
             path: '/',
-            // domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
+            domain: 'v2.boatmate.com'
         })
         res.setHeader('Set-Cookie', serialized);
         res.status(200).json({ msg: 'Logout Successfully' });
@@ -310,4 +282,88 @@ export const logout = (req, res = response) => {
         return res.status(401).json({ msg: 'Invalid token' });
     }
 
+}
+
+export const createProfile = async (req, res = response) => {
+    const { email,
+            password,
+            idRole,
+            personName,
+            lastname,
+            phone,
+            lat,
+            lng,
+            providerName
+        } = req.body
+
+    try {
+        const pass = await encriptPassword(password)
+        const result = await sequelize.transaction(async (t) => {
+            let user;
+            if(idRole == 3) {
+                user = Provider.create({
+                    provider_name: providerName,
+                    provider_lat: lat,
+                    provider_lng: lng,
+                    provider_image: null,
+                    profile: {
+                        email: email,
+                        password: pass,
+                        roleId: idRole,
+                        profile_state: true,
+                        google: false,
+                        person: {
+                            person_name: personName,
+                            lastname: lastname,
+                            phone: phone,
+                            person_image: null
+                        }
+                    }
+                }, {
+                    include: [{
+                        model: Profile,
+                        include: [{
+                            model: Person
+                        }]
+                    }],
+                    transaction: t
+                })
+            } else if(idRole == 4) {
+                user = Customer.create({
+                    customer_lat: lat,
+                    customer_lng: lng,
+                    profile: {
+                        email: email,
+                        password: pass,
+                        roleId: idRole,
+                        profile_state: true,
+                        google: false,
+                        person: {
+                            person_name: personName,
+                            lastname: lastname,
+                            phone: phone,
+                            person_image: null
+                        }
+                    }
+                }, {
+                    include: [{
+                        model: Profile,
+                        include: [{
+                            model: Person
+                        }]
+                    }],
+                    transaction: t
+                })
+            }
+
+            return user
+        })
+
+        res.status(200).json({
+            msg: 'User successfully created',
+            result
+        })
+    } catch (error) {
+        return res.status(400).json({msg: error.message})
+    }
 }

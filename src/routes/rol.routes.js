@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllRoles, getRole } from "../controllers/rol.controller.js";
+import { createRole, deleteRole, getAllRoles, getRole, updateRole } from "../controllers/rol.controller.js";
 import { validateJWT } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
 
@@ -10,6 +10,21 @@ router.get('/roles', [
     validateRol('ADMIN', 'SUPERADMIN')
 ], getAllRoles);
 
-router.get('/roles/:id', getRole)
+router.get('/roles/:id', getRole);
+
+router.post('/role', [
+    validateJWT,
+    validateRol('ADMIN', 'SUPERADMIN')
+], createRole);
+
+router.delete('/role/:idRole', [
+    validateJWT,
+    validateRol('ADMIN', 'SUPERADMIN')
+], deleteRole);
+
+router.post('/role/:idRole', [
+    validateJWT,
+    validateRol('ADMIN', 'SUPERADMIN')
+], updateRole);
 
 export default router;

@@ -1,7 +1,5 @@
 import {v2 as cloudinary} from 'cloudinary';
-import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import { unlink } from 'node:fs'
 
 // Configuration 
 cloudinary.config({
@@ -17,8 +15,6 @@ const storage = new CloudinaryStorage({
         resource_type: 'image'
     }
 });
-
-const upload = multer({storage: storage});
 
 export const uploadImage = async (imgPath) => {
     return await cloudinary.uploader.upload(imgPath, {
@@ -44,10 +40,18 @@ export const uploadImages = async (idProvider, files) => {
     if(urls.length === files.length) return urls
 }
 
+export const deleteImage = async (secureUrl) => {
+    let fileName = String(secureUrl).split('/')
+    fileName = fileName[fileName.length - 1].split('.')[0]
+    return await cloudinary.uploader.destroy(`boatmate/${fileName}`)
+}
+
 export const searchImage = async (secureUrl) => {
+    let fileName = String(secureUrl).split('/')
+    fileName = fileName[fileName.length - 1].split('.')[0]
     try {
         const result = await cloudinary.search
-        .expression(`secure_url:${secureUrl}`)
+        .expression(`${fileName}`)
         .execute();
 
         if(result.total_count === 0) {

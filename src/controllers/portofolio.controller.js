@@ -9,6 +9,7 @@ export const uploadPortofolio = async (req, res = response) => {
     try {
         const response = await uploadImages(idProvider, images);
         console.log(response)
+        res.status(200).json({msg: 'images uploaded'})
     } catch (error) {
         res.status(401).json({msg: error})
     }
