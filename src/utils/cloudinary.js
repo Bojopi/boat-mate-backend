@@ -1,5 +1,7 @@
 import {v2 as cloudinary} from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import fs from 'fs'
+import path from "path";
 
 // Configuration 
 cloudinary.config({
@@ -33,7 +35,10 @@ export const uploadImages = async (idProvider, files) => {
                 return err
             }
 
-            urls.push(res.secure_url);
+            urls.push({
+                portofolio_image: res.secure_url,
+                providerId: idProvider
+            });
         })
     }
 
