@@ -297,6 +297,16 @@ export const createProfile = async (req, res = response) => {
         } = req.body
 
     try {
+
+        //check if the email already exists
+        const emailExists = await Profile.findAll({
+            where: { email: email }
+        });
+
+        if(emailExists.length != 0) {
+            return res.status(400).json({ msg: 'Email already exists' });
+        }
+
         const pass = await encriptPassword(password)
         const result = await sequelize.transaction(async (t) => {
             let user;

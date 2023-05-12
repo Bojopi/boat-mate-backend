@@ -5,7 +5,7 @@ import { deleteProfile, getUsersAll, setDataProfile, setRoleUser } from '../cont
 
 const router = Router();
 
-router.post('/profiles', [
+router.get('/profiles', [
     validateJWT,
     validateRol('ADMIN', 'SUPERADMIN')
 ], getUsersAll);

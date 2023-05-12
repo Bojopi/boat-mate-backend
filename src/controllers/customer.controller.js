@@ -5,6 +5,7 @@ import { Person } from "../models/Person.js";
 import { Profile } from "../models/Profile.js";
 import { Provider } from "../models/Provider.js";
 import { ServiceProviders } from "../models/ServiceProviders.js";
+import { Service } from "../models/Service.js";
 
 export const getServiceHistory = async (req, res = response) => {
     try {
@@ -19,6 +20,8 @@ export const getServiceHistory = async (req, res = response) => {
                 'service_provider.price',
                 'service_provider.provider.id_provider',
                 'service_provider.provider.provider_name',
+                'service_provider.service.id_service',
+                'service_provider.service.service_name',
                 'customer.id_customer',
                 'customer.profile.email',
                 'customer.profile.person.person_name',
@@ -30,6 +33,9 @@ export const getServiceHistory = async (req, res = response) => {
                 attributes: [],
                 include: [{
                     model: Provider,
+                    attributes: []
+                }, {
+                    model: Service,
                     attributes: []
                 }]
             }, {
