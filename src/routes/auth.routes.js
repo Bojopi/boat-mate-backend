@@ -18,9 +18,7 @@ router.post('/google', [
     validateFields
 ], googleSignIn);
 
-router.post('/create-profile', [
-    validateJWT
-], createProfile);
+router.post('/create-profile', createProfile);
 
 router.get('/profile', getUser);
 
