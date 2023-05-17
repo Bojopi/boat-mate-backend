@@ -28,7 +28,7 @@ const apiRouter = express.Router();
 const allowedOrigins = ['http://localhost:3000', 
                         'https://boatmate-frontend.vercel.app', 
                         'http://ec2-3-131-141-161.us-east-2.compute.amazonaws.com', 
-                        'http://v2.boatmate.com'];
+                        'http://boatmate.com'];
 
 app.use(cors({
     origin: allowedOrigins,
