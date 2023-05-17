@@ -18,9 +18,6 @@ export const Provider = sequelize.define('providers', {
     provider_image: {
         type: DataTypes.STRING,
     },
-    zip: {
-        type: DataTypes.STRING
-    },
     provider_description: {
         type: DataTypes.STRING
     },
