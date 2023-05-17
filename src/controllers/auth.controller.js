@@ -48,7 +48,7 @@ export const login = async (req, res = response) => {
 
         if( !profile ) {
             return res.status(400).json({
-                msg: 'Incorrect Email / Password'
+                msg: 'There is no account registered with that email address'
             });
         }
 
@@ -311,7 +311,7 @@ export const createProfile = async (req, res = response) => {
         const result = await sequelize.transaction(async (t) => {
             let user;
             if(idRole == 3) {
-                user = Provider.create({
+                const {id_provider} = await Provider.create({
                     provider_name: providerName,
                     provider_lat: lat,
                     provider_lng: lng,
@@ -334,12 +334,51 @@ export const createProfile = async (req, res = response) => {
                         model: Profile,
                         include: [{
                             model: Person
+                        }, {
+                            model: Role
                         }]
                     }],
+                    transaction: t,
+                });
+                user = await Provider.findOne({
+                    attributes: [
+                        'id_provider',
+                        'provider_name',
+                        'provider_image',
+                        'zip',
+                        'provider_description',
+                        'provider_lat',
+                        'provider_lng',
+                        'profile.id_profile',
+                        'profile.profile_state',
+                        'profile.email',
+                        'profile.google',
+                        'profile.person.id_person',
+                        'profile.person.person_name',
+                        'profile.person.lastname',
+                        'profile.person.phone',
+                        'profile.person.person_image',
+                        'profile.role.id_role',
+                        'profile.role.role_description',
+                    ],
+                    where: id_provider,
+                    include: [{
+                        model: Profile,
+                        attributes: [],
+                        include: [{
+                            model: Person,
+                            attributes: []
+                        },
+                        {
+                            model: Role,
+                            attributes: []
+                        }]
+                    }],
+                    raw: true,
                     transaction: t
                 })
             } else if(idRole == 4) {
-                user = Customer.create({
+                const {id_customer} = await Customer.create({
                     customer_lat: lat,
                     customer_lng: lng,
                     profile: {
@@ -363,16 +402,62 @@ export const createProfile = async (req, res = response) => {
                         }]
                     }],
                     transaction: t
-                })
+                });
+
+                user = await Customer.findOne({
+                    attributes: [
+                        'id_customer',
+                        'customer_lat',
+                        'customer_lng',
+                        'profile.id_profile',
+                        'profile.profile_state',
+                        'profile.email',
+                        'profile.google',
+                        'profile.person.id_person',
+                        'profile.person.person_name',
+                        'profile.person.lastname',
+                        'profile.person.phone',
+                        'profile.person.person_image',
+                        'profile.role.id_role',
+                        'profile.role.role_description',
+                    ],
+                    where: id_customer,
+                    include: [{
+                        model: Profile,
+                        attributes: [],
+                        include: [{
+                            model: Person,
+                            attributes: []
+                        },
+                        {
+                            model: Role,
+                            attributes: []
+                        }]
+                    }],
+                    raw: true,
+                    transactions: t
+                });
             }
 
             return user
         })
+        // generate the jwt
+        const token = await generateJWT(result);
 
-        res.status(200).json({
-            msg: 'User successfully created',
-            result
-        })
+        const serialized = serialize('tokenUser', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 1000 * 60 * 1,
+            path: '/',
+            // domain: 'v2.boatmate.com'
+        });
+
+        res.setHeader('Set-Cookie', serialized);
+
+        return res.json({
+            msg: 'Register successfully'
+        });
     } catch (error) {
         return res.status(400).json({msg: error.message})
     }

@@ -14,7 +14,7 @@ export const getRole = async (req, res) => {
     const { id } = req.params;
     try {
         const role = await Role.findOne({where: { id_role: id}});
-        res.status(200).json({ data: role});
+        res.status(200).json({role});
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
@@ -28,7 +28,10 @@ export const createRole = async (req, res = response) => {
             returning: true
         });
 
-        res.status(200).json({role});
+        res.status(200).json({
+            msg: 'Role successfully created',
+            role
+        });
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
