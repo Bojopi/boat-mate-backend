@@ -80,8 +80,14 @@ export const getServicesProvider = async (req, res = response) => {
     const {idProvider} = req.params;
 
     try {
-        const providers = await ServiceProviders.findAll({
-            attributes: ['id_service_provider', 'price', 'service.id_service', 'service.service_name', 'service.service_description'],
+        const services = await ServiceProviders.findAll({
+            attributes: [
+                'id_service_provider', 
+                'service_provider_state',
+                'service.id_service', 
+                'service.service_name', 
+                'service.service_description',
+            ],
             where: {providerIdProvider: idProvider},
             include: [{
                 model: Service,
@@ -90,7 +96,7 @@ export const getServicesProvider = async (req, res = response) => {
             raw: true
         });
 
-        res.status(200).json({providers});
+        res.status(200).json({services});
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
@@ -98,13 +104,12 @@ export const getServicesProvider = async (req, res = response) => {
 
 export const addService = async (req, res = response) => {
     const {idProvider} = req.params;
-    const {idService, price} = req.body;
+    const {idService} = req.body;
 
     try {
         const providerService = await ServiceProviders.create({
             providerIdProvider: idProvider,
             serviceIdService: idService,
-            price: price
         }, {
             returning: true
         });
