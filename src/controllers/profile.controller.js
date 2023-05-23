@@ -41,6 +41,23 @@ export const setRoleUser = async (req, res = response) => {
     }
 }
 
+export const activateProfile = async (req, res = response) => {
+    const {idProfile} = req.params;
+
+    try {
+        const profile = await Profile.update({
+            profile_state: true
+        }, {
+            where: {id_profile: idProfile},
+            returning: ['profile_state']
+        });
+
+        res.status(200).json({msg: 'Successfully activated', profile});
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+};
+
 export const setDataProfile = async (req, res = response) => {
 
     const { tokenUser } = req.cookies;
@@ -233,7 +250,6 @@ export const setDataProfile = async (req, res = response) => {
                         'id_provider',
                         'provider_name',
                         'provider_image',
-                        'zip',
                         'provider_description',
                         'provider_lat',
                         'provider_lng',
@@ -729,7 +745,6 @@ export const setUser = async (req, res = response) => {
                         'id_provider',
                         'provider_name',
                         'provider_image',
-                        'zip',
                         'provider_description',
                         'provider_lat',
                         'provider_lng',

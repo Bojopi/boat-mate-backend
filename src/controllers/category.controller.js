@@ -2,6 +2,7 @@ import { response } from "express";
 import { Category } from "../models/Category.js";
 import { ServiceCategories } from "../models/ServiceCategories.js";
 import { Service } from "../models/Service.js";
+import { sequelize } from "../database/database.js";
 
 export const getAllCategories = async (req, res) => {
     try {
@@ -38,7 +39,7 @@ export const createCategory = async (req, res = response) => {
             returning: true
         });
 
-        res.status(200).json(category);
+        res.status(200).json({category});
     } catch (error) {
         return res.status(400).json({msg: error.message})
     }
@@ -54,7 +55,6 @@ export const updateCategory = async (req, res = response) => {
         }, {
             where: {id_category: idCategory},
             returning: true,
-            plain: true
         });
 
         res.status(200).json({
@@ -67,11 +67,12 @@ export const updateCategory = async (req, res = response) => {
 };
 
 export const deleteCategory = async (req, res = response) => {
-    const {idCategory} = req.params;
+    console.log('aqui')
+    const { idCategory } = req.params;
 
     try {
         await Category.destroy({
-            where: {id_category: idCategory}
+            where: {id_category: idCategory},
         });
 
         res.status(200).json({

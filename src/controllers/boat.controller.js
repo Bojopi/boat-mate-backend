@@ -7,7 +7,20 @@ import { Profile } from "../models/Profile.js";
 export const getAllBoats = async (req, res) => {
     try {
         const boats = await Boat.findAll({
-            attributes: ['id_boat', 'type', 'model', 'brand', 'year', 'length', 'boat_lat', 'boat_lng', 'customer.profile.person.person_name', 'customer.profile.person.lastname'],
+            attributes: [
+                'id_boat', 
+                'type', 
+                'model', 
+                'brand', 
+                'year', 
+                'length', 
+                'boat_lat', 
+                'boat_lng', 
+                'customer.profile.id_profile',
+                'customer.profile.person.person_name', 
+                'customer.profile.person.lastname',
+                'customer.profile.person.phone'
+            ],
             include: {
                 model: Customer,
                 attributes: [],
@@ -20,8 +33,7 @@ export const getAllBoats = async (req, res) => {
                     }
                 }
             },
-            raw: true,
-            // order: [['customer.profile.person.person_name', 'ASC']]
+            raw: true
         });
         res.status(200).json({ boats });
     } catch (error) {
@@ -45,6 +57,7 @@ export const getBoat = async (req, res = response) => {
                         'length',
                         'boat_lat',
                         'boat_lng',
+                        'customer.profile.id_profile',
                         'customer.profile.person.person_name',
                         'customer.profile.person.lastname',
                         'customer.profile.person.phone'
@@ -99,11 +112,43 @@ export const updateBoat = async (req, res = response) => {
     if(boatLng != null && boatLng != "") dataBoat.boat_lng = boatLng;
 
     try {
-        const updateBoat = await Boat.update(dataBoat, {where: {id_boat: idBoat}, returning: true});
+        await Boat.update(dataBoat, {where: {id_boat: idBoat}});
+
+        const boat = await Boat.findOne({
+            where: {id_boat: idBoat},
+            attributes: ['id_boat',
+                        'type', 
+                        'model', 
+                        'brand',
+                        'brand_motor',
+                        'model_motor',
+                        'year',
+                        'length',
+                        'boat_lat',
+                        'boat_lng',
+                        'customer.profile.id_profile',
+                        'customer.profile.person.person_name',
+                        'customer.profile.person.lastname',
+                        'customer.profile.person.phone'
+                    ],
+            include: [{
+                model: Customer,
+                attributes: [],
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    }]
+                }]
+            }],
+            raw: true
+        });
 
         res.status(200).json({
             msg: 'Updated data',
-            updateBoat
+            boat
         });
     } catch (error) {
         return res.status(400).json({msg: error.message})

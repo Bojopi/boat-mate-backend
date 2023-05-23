@@ -12,6 +12,14 @@ export const Rating = sequelize.define('ratings', {
     },
     review: {
         type: DataTypes.STRING
+    },
+    provider_visible: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+    },
+    rating_date: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 }, {
     timestamps: false

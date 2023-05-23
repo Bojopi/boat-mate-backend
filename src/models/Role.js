@@ -10,6 +10,10 @@ export const Role = sequelize.define('roles', {
     },
     role_description: {
         type: DataTypes.STRING,
+    },
+    role_state: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
     }
 }, {
     timestamps: false

@@ -7,8 +7,9 @@ export const Contract = sequelize.define('contracts', {
         primaryKey: true,
         autoIncrement: true
     },
-    date: {
+    contract_date: {
         type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     },
     contract_state: {
         type: DataTypes.STRING,

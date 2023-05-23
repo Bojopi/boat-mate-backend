@@ -41,13 +41,34 @@ export const deleteRole = async (req, res = response) => {
     const { idRole } = req.params;
 
     try {
-        await Role.destroy({
-            where: {id_role: idRole}
+        const role = await Role.update({
+            role_state: false
+        }, {
+            where: {id_role: idRole},
+            returning: ['role_state']
         });
 
         res.status(200).json({
-            msg: "Role deleted"
+            msg: "Role deleted",
+            role
         });
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+};
+
+export const activateRole = async (req, res = response) => {
+    const {idRole} = req.params;
+
+    try {
+        const role = await Role.update({
+            role_state: true
+        }, {
+            where: {id_role: idRole},
+            returning: ['role_state']
+        });
+
+        res.status(200).json({msg: 'Role successfully activated', role});
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }

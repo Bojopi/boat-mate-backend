@@ -1,5 +1,5 @@
 
-import e, { response } from "express";
+import { response } from "express";
 import { Service } from "../models/Service.js";
 import { sequelize } from "../database/database.js";
 import { ServiceCategories } from "../models/ServiceCategories.js";
@@ -7,10 +7,29 @@ import { Category } from "../models/Category.js";
 import { Op } from "sequelize";
 import { Provider } from "../models/Provider.js";
 import { ServiceProviders } from "../models/ServiceProviders.js";
+import { verify } from "jsonwebtoken";
 
 export const getAllServices = async (req, res) => {
+    const {tokenUser} = req.cookies;
+
+    if(!tokenUser) {
+        return res.status(401).json({msg: 'Unauthorized'});
+    }
     try {
+        let where = {}
+        const user = verify(tokenUser, process.env.JWT_SECRET);
+        if(user.role === 'PROVIDER' || user.role === 'CUSTOMER') {
+            where = {service_state: true}
+        }
         const services = await Service.findAll({
+            where: where,
+            include: [{
+                model: ServiceCategories,
+                attributes: ['categoryIdCategory'],
+                include: [{
+                    model: Category,
+                }]
+            }],
             order: [['service_name', 'ASC']]
         });
         res.status(200).json({ services });
@@ -24,7 +43,14 @@ export const getOneService = async (req, res = response) => {
 
     try {
         const service = await Service.findOne({
-            where: {id_service: idService}
+            where: {id_service: idService},
+            include: [{
+                model: ServiceCategories,
+                attributes: ['categoryIdCategory'],
+                include: [{
+                    model: Category,
+                }]
+            }]
         });
 
         res.status(200).json({ service });
@@ -33,9 +59,53 @@ export const getOneService = async (req, res = response) => {
     }
 };
 
+export const createService = async (req, res = response) => {
+    const { serviceName, serviceDescription, categories } = req.body;
+
+    try {
+        let service;
+        service = await Service.create({
+            service_name: serviceName,
+            service_description: serviceDescription
+        }, {
+            returning: true
+        });
+
+        if(categories.length > 0) {
+            const categoriesId = categories.map((category) => category.id_category);
+
+            const existingCategory = await Category.findAll({
+                where: { id_category: { [Op.in]: categoriesId } }
+            });
+
+            await service.setCategories(existingCategory);
+        } else {
+            await service.setCategories([]);
+        }
+
+        service = await Service.findOne({
+            where: {id_service: service.id_service},
+            include: [{
+                model: ServiceCategories,
+                attributes: ['categoryIdCategory'],
+                include: [{
+                    model: Category,
+                }]
+            }],
+        });
+
+        res.status(200).json({
+            msg: 'Service successfully created',
+            service
+        });
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+};
+
 export const updateService = async (req, res = response) => {
     const {idService} = req.params;
-    const {serviceName, serviceDescription, idCategory} = req.body;
+    const {serviceName, serviceDescription, categories} = req.body;
 
     let dataService = {};
 
@@ -43,37 +113,41 @@ export const updateService = async (req, res = response) => {
     if(serviceDescription != null && serviceDescription != '') dataService.service_description = serviceDescription;
 
     try {
-        const service = await sequelize.transaction(async (t) => {
-            if(idCategory != null && idCategory != '') {
-                await ServiceCategories.update({
-                    categoryIdCategory: idCategory
-                }, {
-                    where: {serviceIdService: idService},
-                    transaction: t
-                });
-            }
-
-            await Service.update(dataService, {
-                where: {id_service: idService},
-                transaction: t
-            });
-
-            const result = await Service.findOne({
-                where: {id_service: idService},
-                include: [{
-                    model: ServiceCategories,
-                    attributes: ['categoryIdCategory'],
-                    include: [{
-                        model: Category
-                    }]
-                }],
-                transaction: t
-            });
-
-            return result;
+        await Service.update(dataService, {
+            where: {id_service: idService}
         });
 
-        res.status(200).json({service});
+        const serviceUpdate = await Service.findOne({
+            where: {id_service: idService}
+        });
+
+        if(categories.length > 0) {
+            const categoriesId = categories.map((category) => category.id_category);
+
+            const existingCategory = await Category.findAll({
+                where: { id_category: { [Op.in]: categoriesId } }
+            });
+
+            await serviceUpdate.setCategories(existingCategory);
+        } else {
+            await serviceUpdate.setCategories([]);
+        }
+
+        const service = await Service.findOne({
+            where: {id_service: idService},
+            include: [{
+                model: ServiceCategories,
+                attributes: ['categoryIdCategory'],
+                include: [{
+                    model: Category,
+                }]
+            }],
+        });
+
+        res.status(200).json({
+            msg: 'Service successfully updated',
+            service
+        });
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
@@ -157,30 +231,34 @@ export const deleteService = async (req, res = response) => {
     const {idService} = req.params;
 
     try {
-        await Service.destroy({
-            where: {id_service: idService}
+        const service = await Service.update({
+            service_state: false
+        }, {
+            where: {id_service: idService},
+            returning: ['service_state']
         });
 
         res.status(200).json({
-            msg: 'Service deleted successfully!'
+            msg: 'Service deleted successfully!',
+            service
         });
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
 };
 
-export const createService = async (req, res = response) => {
-    const {serviceName, serviceDescription} = req.body;
+export const activateService = async (req, res = response) => {
+    const {idService} = req.params;
 
     try {
-        const service = await Service.create({
-            service_name: serviceName,
-            service_description: serviceDescription
+        const service = await Service.update({
+            service_state: true
         }, {
-            returning: true
+            where: {id_service: idService},
+            returning: ['service_state']
         });
 
-        res.status(200).json({service});
+        res.status(200).json({msg: 'Successfully activated', service});
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }

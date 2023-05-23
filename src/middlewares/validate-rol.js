@@ -23,12 +23,12 @@ export const validateRol = (...roles) => {
         if(!req.profile) {
             return res.status(500).json({ msg: "Token invalid" });
         }
-        
+
         const {
-            role: {role_description},
+            role: {role_description, role_state},
         } = req.profile;
 
-        if(!roles.includes(role_description)) {
+        if(!roles.includes(role_description) || !role_state) {
             return res.status(401).json({
                 msg: `${role_description} do not have permissions to access this functionality`
             })
