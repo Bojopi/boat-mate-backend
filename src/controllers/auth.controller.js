@@ -205,9 +205,12 @@ export const googleSignIn = async (req, res = response) => {
             }
 
             const person = await Person.create(data)
+
+            const pass = await encriptPassword('123456');
+
             await person.createProfile({
                 email: email,
-                password: '123',
+                password: pass,
                 profile_state: true,
                 roleId: 4,
                 personId: person.dataValues.id_person,
