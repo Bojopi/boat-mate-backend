@@ -14,38 +14,33 @@ export const Service = sequelize.define('services', {
     },
     service_description: {
         type: DataTypes.STRING
+    },
+    service_state: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
     }
 }, {
     timestamps: false
 });
 
 
-Service.belongsToMany(Category, { 
-    through: ServiceCategories,
-    uniqueKey: 'serviceId',
-    foreignKey: 'serviceId',
-});
-
-Category.belongsToMany(Service, { 
-    through: ServiceCategories, 
-    uniqueKey: 'categoryId',
-    foreignKey: 'categoryId',
-});
-
-
-Category.belongsToMany(Service, {
-    through: ServiceCategories,
-});
 Service.belongsToMany(Category, {
     through: ServiceCategories,
 });
+Category.belongsToMany(Service, {
+    through: ServiceCategories,
+});
 
 
-Service.hasMany(ServiceCategories);
-ServiceCategories.belongsTo(Service);
+Category.hasMany(ServiceCategories, {
+});
+ServiceCategories.belongsTo(Category, {
+});
 
 
-Category.hasMany(ServiceCategories);
-ServiceCategories.belongsTo(Category);
+Service.hasMany(ServiceCategories, {
+});
+ServiceCategories.belongsTo(Service, {
+});
 
 

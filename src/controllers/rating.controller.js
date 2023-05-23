@@ -1,12 +1,60 @@
 import { response } from "express";
 import { Rating } from "../models/Rating.js";
 import { ServiceProviders } from "../models/ServiceProviders.js";
-import { Sequelize } from "sequelize";
 import { Provider } from "../models/Provider.js";
+import { Customer } from "../models/Customer.js";
+import { Person } from "../models/Person.js";
+import { Profile } from "../models/Profile.js";
+import { Service } from "../models/Service.js";
 
 export const getAllRatings = async (req, res = response) => {
     try {
-        const ratings = await Rating.findAll();
+        const ratings = await Rating.findAll({
+            attributes: [
+                'id_rating',
+                'rating',
+                'review',
+                'rating_date',
+                'provider_visible',
+                'service_provider.id_service_provider',
+                'service_provider.service_provider_description',
+                'service_provider.provider.id_provider',
+                'service_provider.provider.provider_name',
+                'service_provider.provider.provider_image',
+                'service_provider.service.id_service',
+                'service_provider.service.service_name',
+                'customer.id_customer',
+                'customer.profile.email',
+                'customer.profile.person.person_name',
+                'customer.profile.person.lastname',
+                'customer.profile.person.phone',
+                'customer.profile.person.person_image',
+            ],
+            include: [{
+                model: ServiceProviders,
+                attributes: [],
+                include: [{
+                    model: Provider,
+                    attributes: []
+                }, {
+                    model: Service,
+                    attributes: []
+                }]
+            }, {
+                model: Customer,
+                attributes: [],
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    }]
+                }]
+            }],
+            raw: true,
+            order: [['rating_date', 'DESC']]
+        });
 
         res.status(200).json({ratings});
     } catch (error) {
@@ -19,7 +67,50 @@ export const getOneRating = async (req, res = response) => {
 
     try {
         const rating = await Rating.findOne({
-            where: {id_rating: idRating}
+            attributes: [
+                'id_rating',
+                'rating',
+                'review',
+                'rating_date',
+                'provider_visible',
+                'service_provider.id_service_provider',
+                'service_provider.service_provider_description',
+                'service_provider.provider.id_provider',
+                'service_provider.provider.provider_name',
+                'service_provider.provider.provider_image',
+                'service_provider.service.id_service',
+                'service_provider.service.service_name',
+                'customer.id_customer',
+                'customer.profile.email',
+                'customer.profile.person.person_name',
+                'customer.profile.person.lastname',
+                'customer.profile.person.phone',
+                'customer.profile.person.person_image',
+            ],
+            where: {id_rating: idRating},
+            include: [{
+                model: ServiceProviders,
+                attributes: [],
+                include: [{
+                    model: Provider,
+                    attributes: []
+                }, {
+                    model: Service,
+                    attributes: []
+                }]
+            }, {
+                model: Customer,
+                attributes: [],
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    }]
+                }]
+            }],
+            raw: true
         });
 
         res.status(200).json({rating});
@@ -47,18 +138,52 @@ export const getRatingProvider = async (req, res = response) => {
     const {idProvider} = req.params;
 
     try {
-        const rating = await Provider.findAll({
-            attributes: [[Sequelize.fn('AVG', Sequelize.col('service_providers.ratings.rating')), 'averageRating']],
-            where: {id_provider: idProvider},
+        const rating = await Rating.findAll({
+            attributes: [
+                'id_rating',
+                'rating',
+                'review',
+                'rating_date',
+                'provider_visible',
+                'service_provider.id_service_provider',
+                'service_provider.service_provider_description',
+                'service_provider.provider.id_provider',
+                'service_provider.provider.provider_name',
+                'service_provider.provider.provider_image',
+                'service_provider.service.id_service',
+                'service_provider.service.service_name',
+                'customer.id_customer',
+                'customer.profile.email',
+                'customer.profile.person.person_name',
+                'customer.profile.person.lastname',
+                'customer.profile.person.phone',
+                'customer.profile.person.person_image',
+            ],
             include: [{
                 model: ServiceProviders,
                 attributes: [],
+                where: {providerIdProvider: idProvider},
                 include: [{
-                    model: Rating,
+                    model: Provider,
+                    attributes: []
+                }, {
+                    model: Service,
                     attributes: []
                 }]
+            }, {
+                model: Customer,
+                attributes: [],
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    }]
+                }]
             }],
-            group: ['id_provider']
+            order: [['rating_date', 'DESC']],
+            raw: true
         })
         res.status(200).json({ rating });
     } catch (error) {
@@ -70,21 +195,69 @@ export const postRating = async (req, res = response) => {
     const {idCustomer} = req.params;
     const {
         idServiceProvider,
-        rating,
+        rating: ratingNew,
         review
     } = req.body;
 
     try {
-        const post = await Rating.create({
-            rating: rating,
+        const {id_rating} = await Rating.create({
+            rating: ratingNew,
             review: review,
             customerId: idCustomer,
             serviceProviderId: idServiceProvider
-        }, {
-            returning: true
         });
 
-        res.status(200).json({post});
+        const rating = await Rating.findOne({
+            attributes: [
+                'id_rating',
+                'rating',
+                'review',
+                'rating_date',
+                'provider_visible',
+                'service_provider.id_service_provider',
+                'service_provider.service_provider_description',
+                'service_provider.provider.id_provider',
+                'service_provider.provider.provider_name',
+                'service_provider.provider.provider_image',
+                'service_provider.service.id_service',
+                'service_provider.service.service_name',
+                'customer.id_customer',
+                'customer.profile.email',
+                'customer.profile.person.person_name',
+                'customer.profile.person.lastname',
+                'customer.profile.person.phone',
+                'customer.profile.person.person_image',
+            ],
+            where: {id_rating: id_rating},
+            include: [{
+                model: ServiceProviders,
+                attributes: [],
+                include: [{
+                    model: Provider,
+                    attributes: []
+                }, {
+                    model: Service,
+                    attributes: []
+                }]
+            }, {
+                model: Customer,
+                attributes: [],
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    }]
+                }]
+            }],
+            raw: true
+        });
+
+        res.status(200).json({
+            msg: 'Review successfully created',
+            rating
+        });
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
@@ -100,27 +273,32 @@ export const updateRating = async (req, res = response) => {
     if(review != null && review != "") dataRating.review = review;
 
     try {
-        const ratingUpdated = await Rating.update(dataRating, {
+        const rating = await Rating.update(dataRating, {
             where: {id_rating: idRating},
             returning: true
         });
 
-        res.status(200).json({ratingUpdated});
+        res.status(200).json({rating});
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
 };
 
-export const deleteRating = async (req, res = response) => {
+export const changeVisible = async (req, res = response) => {
     const {idRating} = req.params;
+    const {provider_visible} = req.body;
 
     try {
-        await Rating.destroy({
-            where: {id_rating: idRating}
+        const rating  = await Rating.update({
+            provider_visible: provider_visible
+        }, {
+            where: {id_rating: idRating},
+            returning: ['provider_visible']
         });
 
         res.status(200).json({
-            msg: 'Rating deleted successfully!'
+            msg: provider_visible ? 'Rating visible!' : 'Rating hidden!',
+            rating
         });
     } catch (error) {
         return res.status(400).json({msg: error.message});

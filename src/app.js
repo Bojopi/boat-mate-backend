@@ -22,6 +22,7 @@ import ratingRoutes from './routes/rating.routes.js';
 import mediaRoutes from './routes/media.routes.js';
 import profileRoutes from './routes/profile.routes.js';
 import portofolioRoutes from './routes/portofolio.routes.js';
+import contractRoutes from './routes/contract.routes.js';
 
 const apiRouter = express.Router();
 
@@ -68,6 +69,7 @@ apiRouter.use(ratingRoutes);
 apiRouter.use(mediaRoutes);
 apiRouter.use(profileRoutes);
 apiRouter.use(portofolioRoutes);
+apiRouter.use(contractRoutes);
 
 
 

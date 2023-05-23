@@ -2,7 +2,7 @@ import bcryptjs from 'bcrypt'
 
 export const encriptPassword = async (password) => {
     try {
-        const resHash = bcryptjs.hashSync(password, 12);
+        const resHash = await bcryptjs.hash(password, 12);
         return resHash;
     } catch (error) {
         console.error(error)
@@ -12,7 +12,7 @@ export const encriptPassword = async (password) => {
 
 export const decryptPassword = async (password, hash) => {
     try {
-        const resCompare = await bcryptjs.compareSync(password, hash);
+        const resCompare = await bcryptjs.compare(password, hash);
         if(resCompare) {
             return true;
         } else {

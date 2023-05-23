@@ -9,7 +9,7 @@ import { verify } from "jsonwebtoken";
 import { googleVerify } from "../helpers/google-verify.js";
 import { Provider } from "../models/Provider.js";
 import { Customer } from "../models/Customer.js";
-import { encriptPassword } from "../utils/bcryp.js";
+import { decryptPassword, encriptPassword } from "../utils/bcryp.js";
 import { sequelize } from "../database/database.js";
 
 export const login = async (req, res = response) => {
@@ -52,7 +52,7 @@ export const login = async (req, res = response) => {
             });
         }
 
-        //if profile is active
+        //if profile is inactive
         if(!profile.profile_state) {
             return res.status(400).json({
                 msg: 'Profile is inactive'
@@ -60,7 +60,7 @@ export const login = async (req, res = response) => {
         }
 
         //check password
-        const validPassword = bcrypjs.compareSync( password, profile.password);
+        const validPassword = await decryptPassword( password, profile.password);
         if(!validPassword) {
             return res.status(400).json({
                 msg: 'Incorrect Email / Password'
@@ -74,7 +74,6 @@ export const login = async (req, res = response) => {
                     'id_provider',
                     'provider_name',
                     'provider_image',
-                    'zip',
                     'provider_description',
                     'provider_lat',
                     'provider_lng',
@@ -149,12 +148,11 @@ export const login = async (req, res = response) => {
 
         //generate the jwt
         const token = await generateJWT(profile);
-
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
             secure: false,
             sameSite: 'lax',
-            maxAge: 1000 * 60 * 1,
+            maxAge: 1000 * 60 * 60 * 23,
             path: '/',
             // domain: 'v2.boatmate.com'
         })
@@ -267,11 +265,11 @@ export const logout = (req, res = response) => {
     try {
         verify(tokenUser, process.env.JWT_SECRET);
 
-        const serialized = serialize('tokenUser', tokenUser, {
+        const serialized = serialize('tokenUser', null, {
             httpOnly: true,
             secure: false,
             sameSite: 'lax',
-            maxAge: 1000 * 60 * 1,
+            maxAge: 0,
             path: '/',
             // domain: 'v2.boatmate.com'
         })
@@ -448,7 +446,7 @@ export const createProfile = async (req, res = response) => {
             httpOnly: true,
             secure: false,
             sameSite: 'lax',
-            maxAge: 1000 * 60 * 1,
+            maxAge: 1000 * 60 * 4,
             path: '/',
             // domain: 'v2.boatmate.com'
         });

@@ -8,8 +8,12 @@ export const ServiceProviders = sequelize.define('service_providers', {
         primaryKey: true,
         autoIncrement: true
     },
-    price: {
-        type: DataTypes.FLOAT,
+    service_provider_state: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+    },
+    service_provider_description: {
+        type: DataTypes.STRING,
     }
 }, {
     timestamps: false

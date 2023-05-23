@@ -18,7 +18,6 @@ export const generateJWT = ( profile ) => {
         id_provider,
         provider_name,
         provider_image,
-        zip,
         provider_description,
         provider_lat,
         provider_lng,
@@ -42,7 +41,6 @@ export const generateJWT = ( profile ) => {
             idProvider: id_provider,
             providerName: provider_name,
             providerImage: provider_image,
-            zip: zip,
             providerDescription: provider_description,
             providerLat: provider_lat,
             providerLng: provider_lng,
@@ -51,7 +49,7 @@ export const generateJWT = ( profile ) => {
             customerLng: customer_lng
         }
 
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' },
+        jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "4m"},
         (err, token) => {
             if (err) {
                 console.log(err);

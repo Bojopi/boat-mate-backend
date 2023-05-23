@@ -33,10 +33,25 @@ export const getPortofolio = async (req, res = response) => {
     
     try {
         const portofolio = await Portofolio.findAll({
-            where: {providerId: idProvider}
+            where: {providerId: idProvider},
+            order: [['id_portofolio', 'ASC']]
         });
 
         res.status(200).json({portofolio});
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+};
+
+export const getOnePortofolio = async (req, res = response) => {
+    const {idPortofolio} = req.params;
+
+    try {
+        const portofolio = await Portofolio.findOne({
+            where: {id_portofolio: idPortofolio}
+        });
+
+        res.status(200).json({portofolio})
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }

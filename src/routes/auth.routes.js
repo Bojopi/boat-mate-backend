@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { validateJWT } from '../middlewares/validate-jwt.js';
 import { createProfile, getUser, googleSignIn, login, logout } from '../controllers/auth.controller.js';
 import { validateFields } from '../middlewares/validate-fields.js';
 
