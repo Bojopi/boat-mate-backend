@@ -28,14 +28,59 @@ export const getUsersAll = async (req, res = response) => {
 }
 
 export const setRoleUser = async (req, res = response) => {
-    const { id } = req.params;
+
+    const { tokenUser } = req.cookies;
+
+    const { idProfile } = req.params;
     const { role } = req.body;
     try {
         await Profile.update(
             {roleId: role},
-            {where: {id_profile: id}}
+            {where: {id_profile: idProfile}}
         );
-        res.status(200).json({ role, msg: 'Role updated successfully'});
+
+        let resUser = await Profile.findOne({
+            where: { id_profile: idProfile },
+            attributes: ['id_profile',
+                        'email',
+                        'password',
+                        'profile_state',
+                        'google',
+                        'person.id_person',
+                        'person.person_name',
+                        'person.lastname',
+                        'person.phone',
+                        'person.person_image',
+                        'role.id_role',
+                        'role.role_description'
+                    ],
+            include: [
+                {
+                    model: Person,
+                    attributes: []
+                },
+                {
+                    model: Role,
+                    attributes: []
+                }],
+            raw: true,
+        });
+        
+        //update the jwt
+        const token = await updateJWT(resUser, tokenUser);
+
+        const serialized = serialize('tokenUser', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 1000 * 60 * 60 * 23,
+            path: '/',
+            // domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
+        })
+
+        res.setHeader('Set-Cookie', serialized);
+
+        res.status(200).json({ msg: 'Role updated successfully'});
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
@@ -292,7 +337,7 @@ export const setDataProfile = async (req, res = response) => {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'lax',
-                maxAge: 1000 * 60 * 1,
+                maxAge: 1000 * 60 * 60 * 23,
                 path: '/',
                 // domain: 'ec2-3-131-141-161.us-east-2.compute.amazonaws.com'
             })

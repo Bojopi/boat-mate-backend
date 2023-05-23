@@ -19,7 +19,7 @@ router.get('/profile/:idProfile', [
 
 router.post('/profile/:id', [ validateJWTExpired, validateJWT ], setDataProfile);
 
-router.post('/profile-role/:id', [ validateJWTExpired, validateJWT ] , setRoleUser);
+router.post('/profile-role/:idProfile', [ validateJWTExpired, validateJWT ] , setRoleUser);
 
 router.post('/delete-profile/:idProfile', [
     validateJWTExpired,
