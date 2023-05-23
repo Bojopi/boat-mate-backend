@@ -236,7 +236,7 @@ export const googleSignIn = async (req, res = response) => {
             httpOnly: true,
             secure: false,
             sameSite: 'lax',
-            maxAge: 1000 * 60 * 1,
+            maxAge: 1000 * 60 * 60 * 23,
             path: '/',
             domain: 'boatmate.com'
         })
