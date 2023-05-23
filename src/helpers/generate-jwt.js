@@ -49,7 +49,7 @@ export const generateJWT = ( profile ) => {
             customerLng: customer_lng
         }
 
-        jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "4m"},
+        jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "23h"},
         (err, token) => {
             if (err) {
                 console.log(err);

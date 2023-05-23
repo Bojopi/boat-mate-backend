@@ -154,7 +154,7 @@ export const login = async (req, res = response) => {
             sameSite: 'lax',
             maxAge: 1000 * 60 * 60 * 23,
             path: '/',
-            domain: 'boatmate.com'
+            // domain: 'boatmate.com'
         })
 
         res.setHeader('Set-Cookie', serialized)
@@ -192,7 +192,29 @@ export const googleSignIn = async (req, res = response) => {
 
         let user = await Profile.findOne({
             where: { email },
-            include: [Person, Role]
+            attributes: ['id_profile',
+                        'email',
+                        'password',
+                        'profile_state',
+                        'google',
+                        'person.id_person',
+                        'person.person_name',
+                        'person.lastname',
+                        'person.phone',
+                        'person.person_image',
+                        'role.id_role',
+                        'role.role_description'
+                    ],
+            include: [
+                {
+                    model: Person,
+                    attributes: []
+                },
+                {
+                    model: Role,
+                    attributes: []
+                }],
+            raw: true
         })
 
         //nonexistent user
@@ -219,7 +241,29 @@ export const googleSignIn = async (req, res = response) => {
 
             user = await Profile.findOne({
                 where: { email },
-                include: [Person, Role]
+                attributes: ['id_profile',
+                            'email',
+                            'password',
+                            'profile_state',
+                            'google',
+                            'person.id_person',
+                            'person.person_name',
+                            'person.lastname',
+                            'person.phone',
+                            'person.person_image',
+                            'role.id_role',
+                            'role.role_description'
+                        ],
+                include: [
+                    {
+                        model: Person,
+                        attributes: []
+                    },
+                    {
+                        model: Role,
+                        attributes: []
+                    }],
+                raw: true
             })
 
             newUser = true;
@@ -234,14 +278,13 @@ export const googleSignIn = async (req, res = response) => {
 
         //generate the jwt
         const token = await generateJWT(user);
-
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
             secure: false,
             sameSite: 'lax',
             maxAge: 1000 * 60 * 60 * 23,
             path: '/',
-            domain: 'boatmate.com'
+            // domain: 'boatmate.com'
         })
 
         res.setHeader('Set-Cookie', serialized)
@@ -252,7 +295,7 @@ export const googleSignIn = async (req, res = response) => {
         })
     } catch (error) {
         res.status(401).json({
-            msg: 'Invalid credential'
+            msg: error.message
         })
     }
 }
@@ -274,7 +317,7 @@ export const logout = (req, res = response) => {
             sameSite: 'lax',
             maxAge: 0,
             path: '/',
-            domain: 'boatmate.com'
+            // domain: 'boatmate.com'
         })
         res.setHeader('Set-Cookie', serialized);
         res.status(200).json({ msg: 'Logout Successfully' });
