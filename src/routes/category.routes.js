@@ -8,7 +8,6 @@ const router = Router();
 router.get('/categories', [
     validateJWTExpired,
     validateJWT,
-    validateRol('ADMIN', 'SUPERADMIN')
 ], getAllCategories);
 
 router.get('/category/:idCategory', [
