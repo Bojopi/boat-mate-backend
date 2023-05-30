@@ -2,7 +2,6 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
 import { Service } from "./Service.js";
 import { Schedule } from './Schedule.js'
-import { Rating } from "./Rating.js";
 import { Portofolio } from "./Portofolio.js";
 import { ServiceProviders } from "./ServiceProviders.js";
 
@@ -54,6 +53,7 @@ Portofolio.belongsTo(Provider, {
 
 Provider.belongsToMany(Service, {
     through: ServiceProviders,
+    foreignKeyConstraint: true
 });
 Service.belongsToMany(Provider, {
     through: ServiceProviders,

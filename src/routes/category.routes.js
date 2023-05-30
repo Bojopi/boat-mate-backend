@@ -5,10 +5,7 @@ import { createCategory, deleteCategory, getAllCategories, getOneCategory, getSe
 
 const router = Router();
 
-router.get('/categories', [
-    validateJWTExpired,
-    validateJWT,
-], getAllCategories);
+router.get('/categories',  getAllCategories);
 
 router.get('/category/:idCategory', [
     validateJWTExpired,

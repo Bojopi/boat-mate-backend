@@ -7,22 +7,10 @@ import { Category } from "../models/Category.js";
 import { Op } from "sequelize";
 import { Provider } from "../models/Provider.js";
 import { ServiceProviders } from "../models/ServiceProviders.js";
-import { verify } from "jsonwebtoken";
 
 export const getAllServices = async (req, res) => {
-    const {tokenUser} = req.cookies;
-
-    if(!tokenUser) {
-        return res.status(401).json({msg: 'Unauthorized'});
-    }
     try {
-        let where = {}
-        const user = verify(tokenUser, process.env.JWT_SECRET);
-        if(user.role === 'PROVIDER' || user.role === 'CUSTOMER') {
-            where = {service_state: true}
-        }
         const services = await Service.findAll({
-            where: where,
             include: [{
                 model: ServiceCategories,
                 attributes: ['categoryIdCategory'],
