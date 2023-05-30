@@ -1,7 +1,6 @@
 
 import { response } from "express";
 import { Service } from "../models/Service.js";
-import { sequelize } from "../database/database.js";
 import { ServiceCategories } from "../models/ServiceCategories.js";
 import { Category } from "../models/Category.js";
 import { Op } from "sequelize";
@@ -37,6 +36,28 @@ export const getOneService = async (req, res = response) => {
                 attributes: ['categoryIdCategory'],
                 include: [{
                     model: Category,
+                }]
+            }]
+        });
+
+        res.status(200).json({ service });
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+};
+
+export const findByNameService = async (req, res = response) => {
+    const {name} = req.body;
+
+    try {
+        const service = await Service.findOne({
+            where: {
+                service_name: { [Op.iLike]: name }
+            },
+            include: [{
+                model: ServiceProviders,
+                include: [{
+                    model: Provider,
                 }]
             }]
         });
