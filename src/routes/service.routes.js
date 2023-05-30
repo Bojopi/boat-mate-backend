@@ -19,7 +19,7 @@ router.get('/service-categories/:idService', [
     validateRol('ADMIN', 'SUPERADMIN')
 ], getCategoriesService);
 
-router.get('/provider-service',  findByNameService);
+router.post('/provider-service',  findByNameService);
 
 router.get('/provider-service/:idService',  getProvidersService);
 
