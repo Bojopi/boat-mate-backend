@@ -5,10 +5,7 @@ import { activateService, addCategory, createService, deleteCategory, deleteServ
 
 const router = Router();
 
-router.get('/services', [
-    validateJWTExpired,
-    validateJWT,
-], getAllServices);
+router.get('/services', getAllServices);
 
 router.get('/service/:idService', [
     validateJWTExpired,
@@ -22,11 +19,7 @@ router.get('/service-categories/:idService', [
     validateRol('ADMIN', 'SUPERADMIN')
 ], getCategoriesService);
 
-router.get('/provider-service/:idService', [
-    validateJWTExpired,
-    validateJWT,
-    validateRol('ADMIN', 'SUPERADMIN', 'CUSTOMER')
-], getProvidersService);
+router.get('/provider-service/:idService',  getProvidersService);
 
 router.post('/service/:idService', [
     validateJWTExpired,

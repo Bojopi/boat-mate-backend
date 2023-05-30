@@ -11,6 +11,8 @@ import { Provider } from "../models/Provider.js";
 import { Customer } from "../models/Customer.js";
 import { decryptPassword, encriptPassword } from "../utils/bcryp.js";
 import { sequelize } from "../database/database.js";
+import { Service } from "../models/Service.js";
+import { Op } from "sequelize";
 
 export const login = async (req, res = response) => {
 
@@ -337,7 +339,8 @@ export const createProfile = async (req, res = response) => {
             phone,
             lat,
             lng,
-            providerName
+            providerName,
+            services
         } = req.body
 
     try {
@@ -352,141 +355,149 @@ export const createProfile = async (req, res = response) => {
         }
 
         const pass = await encriptPassword(password)
-        const result = await sequelize.transaction(async (t) => {
-            let user;
-            if(idRole == 3) {
-                const {id_provider} = await Provider.create({
-                    provider_name: providerName,
-                    provider_lat: lat,
-                    provider_lng: lng,
-                    provider_image: null,
-                    profile: {
-                        email: email,
-                        password: pass,
-                        roleId: idRole,
-                        profile_state: true,
-                        google: false,
-                        person: {
-                            person_name: personName,
-                            lastname: lastname,
-                            phone: phone,
-                            person_image: null
-                        }
-                    }
-                }, {
-                    include: [{
-                        model: Profile,
-                        include: [{
-                            model: Person
-                        }, {
-                            model: Role
-                        }]
-                    }],
-                    transaction: t,
-                });
-                user = await Provider.findOne({
-                    attributes: [
-                        'id_provider',
-                        'provider_name',
-                        'provider_image',
-                        'zip',
-                        'provider_description',
-                        'provider_lat',
-                        'provider_lng',
-                        'profile.id_profile',
-                        'profile.profile_state',
-                        'profile.email',
-                        'profile.google',
-                        'profile.person.id_person',
-                        'profile.person.person_name',
-                        'profile.person.lastname',
-                        'profile.person.phone',
-                        'profile.person.person_image',
-                        'profile.role.id_role',
-                        'profile.role.role_description',
-                    ],
-                    where: id_provider,
-                    include: [{
-                        model: Profile,
-                        attributes: [],
-                        include: [{
-                            model: Person,
-                            attributes: []
-                        },
-                        {
-                            model: Role,
-                            attributes: []
-                        }]
-                    }],
-                    raw: true,
-                    transaction: t
-                })
-            } else if(idRole == 4) {
-                const {id_customer} = await Customer.create({
-                    customer_lat: lat,
-                    customer_lng: lng,
-                    profile: {
-                        email: email,
-                        password: pass,
-                        roleId: idRole,
-                        profile_state: true,
-                        google: false,
-                        person: {
-                            person_name: personName,
-                            lastname: lastname,
-                            phone: phone,
-                            person_image: null
-                        }
-                    }
-                }, {
-                    include: [{
-                        model: Profile,
-                        include: [{
-                            model: Person
-                        }]
-                    }],
-                    transaction: t
-                });
 
-                user = await Customer.findOne({
-                    attributes: [
-                        'id_customer',
-                        'customer_lat',
-                        'customer_lng',
-                        'profile.id_profile',
-                        'profile.profile_state',
-                        'profile.email',
-                        'profile.google',
-                        'profile.person.id_person',
-                        'profile.person.person_name',
-                        'profile.person.lastname',
-                        'profile.person.phone',
-                        'profile.person.person_image',
-                        'profile.role.id_role',
-                        'profile.role.role_description',
-                    ],
-                    where: id_customer,
+        let user;
+        if(idRole == 3) {
+            const provider = await Provider.create({
+                provider_name: providerName,
+                provider_lat: lat,
+                provider_lng: lng,
+                provider_image: null,
+                profile: {
+                    email: email,
+                    password: pass,
+                    roleId: idRole,
+                    profile_state: true,
+                    google: false,
+                    person: {
+                        person_name: personName,
+                        lastname: lastname,
+                        phone: phone,
+                        person_image: null
+                    }
+                }
+            }, {
+                include: [{
+                    model: Profile,
                     include: [{
-                        model: Profile,
-                        attributes: [],
-                        include: [{
-                            model: Person,
-                            attributes: []
-                        },
-                        {
-                            model: Role,
-                            attributes: []
-                        }]
-                    }],
-                    raw: true,
-                    transactions: t
+                        model: Person
+                    }, {
+                        model: Role
+                    }]
+                }],
+                returning: true,
+            });
+
+            if(services.length > 0) {
+                const servicesId = services.map((service) => service.id_service);
+    
+                const existingService = await Service.findAll({
+                    where: { id_service: { [Op.in]: servicesId } }
                 });
+    
+                await provider.setServices(existingService);
+            } else {
+                await provider.setServices([]);
             }
 
-            return user
-        })
+            user = await Provider.findOne({
+                attributes: [
+                    'id_provider',
+                    'provider_name',
+                    'provider_image',
+                    'provider_description',
+                    'provider_lat',
+                    'provider_lng',
+                    'profile.id_profile',
+                    'profile.profile_state',
+                    'profile.email',
+                    'profile.google',
+                    'profile.person.id_person',
+                    'profile.person.person_name',
+                    'profile.person.lastname',
+                    'profile.person.phone',
+                    'profile.person.person_image',
+                    'profile.role.id_role',
+                    'profile.role.role_description',
+                ],
+                where: provider.id_provider,
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    },
+                    {
+                        model: Role,
+                        attributes: []
+                    }]
+                }],
+                raw: true
+            })
+        } else if(idRole == 4) {
+            const {id_customer} = await Customer.create({
+                customer_lat: lat,
+                customer_lng: lng,
+                profile: {
+                    email: email,
+                    password: pass,
+                    roleId: idRole,
+                    profile_state: true,
+                    google: false,
+                    person: {
+                        person_name: personName,
+                        lastname: lastname,
+                        phone: phone,
+                        person_image: null
+                    }
+                }
+            }, {
+                include: [{
+                    model: Profile,
+                    include: [{
+                        model: Person
+                    }]
+                }]
+            });
+
+            user = await Customer.findOne({
+                attributes: [
+                    'id_customer',
+                    'customer_lat',
+                    'customer_lng',
+                    'profile.id_profile',
+                    'profile.profile_state',
+                    'profile.email',
+                    'profile.google',
+                    'profile.person.id_person',
+                    'profile.person.person_name',
+                    'profile.person.lastname',
+                    'profile.person.phone',
+                    'profile.person.person_image',
+                    'profile.role.id_role',
+                    'profile.role.role_description',
+                ],
+                where: id_customer,
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    },
+                    {
+                        model: Role,
+                        attributes: []
+                    }]
+                }],
+                raw: true
+            });
+        }
+
+
         // generate the jwt
-        const token = await generateJWT(result);
+        const token = await generateJWT(user);
 
         const serialized = serialize('tokenUser', token, {
             httpOnly: true,
