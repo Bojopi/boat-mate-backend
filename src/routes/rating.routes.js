@@ -22,11 +22,7 @@ router.get('/customer-rating/:idCustomer', [
     validateRol('ADMIN', 'SUPERADMIN', 'CUSTOMER')
 ], getCustomersPost);
 
-router.get('/provider-rating/:idProvider', [
-    validateJWTExpired,
-    validateJWT,
-    validateRol('ADMIN', 'SUPERADMIN', 'PROVIDER')
-], getRatingProvider);
+router.get('/provider-rating/:idProvider', getRatingProvider);
 
 router.post('/post-rating/:idCustomer', [
     validateJWTExpired,
