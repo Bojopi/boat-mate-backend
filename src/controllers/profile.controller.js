@@ -3,7 +3,7 @@ import { Person } from "../models/Person.js";
 import { Profile } from "../models/Profile.js";
 import { Provider } from "../models/Provider.js";
 import { Customer } from "../models/Customer.js";
-import { deleteImage, searchImage, uploadImage } from "../utils/cloudinary.js";
+import { deleteImage, uploadImage } from "../utils/cloudinary.js";
 import { sequelize } from "../database/database.js";
 import { decryptPassword, encriptPassword } from "../utils/bcryp.js";
 import { updateJWT } from "../helpers/generate-jwt.js";
@@ -115,6 +115,7 @@ export const setDataProfile = async (req, res = response) => {
         password,
         lat,
         lng,
+        zip,
         phone,
         state,
         providerDescription
@@ -191,6 +192,7 @@ export const setDataProfile = async (req, res = response) => {
 
         if(lat != null || lat != '') updateData.provider_lat = lat;
         if(lng != null || lng != '') updateData.provider_lng = lng;
+        if(zip != null || zip != '') updateData.zip = zip;
 
         if(providerImage != null && providerImage != undefined && provider_image != null && provider_image != '') {
             const resDelete = await deleteImage(provider_image);
@@ -298,6 +300,7 @@ export const setDataProfile = async (req, res = response) => {
                         'provider_description',
                         'provider_lat',
                         'provider_lng',
+                        'zip',
                         'profile.id_profile',
                         'profile.profile_state',
                         'profile.email',
@@ -380,6 +383,7 @@ export const createUserProfile = async (req, res = response) => {
         phone,
         lat,
         lng,
+        zip,
         providerName,
         providerDescription,
     } = req.body
@@ -431,6 +435,7 @@ export const createUserProfile = async (req, res = response) => {
                     provider_name: providerName,
                     provider_lat: lat,
                     provider_lng: lng,
+                    zip: zip,
                     provider_description: providerDescription,
                     provider_image: newProvImage,
                     profile: {
@@ -537,6 +542,7 @@ export const getUser = async (req, res = response) => {
                         'provider_description',
                         'provider_lat',
                         'provider_lng',
+                        'zip',
                         'profile.id_profile',
                         'profile.email',
                         'profile.profile_state',
@@ -614,6 +620,7 @@ export const setUser = async (req, res = response) => {
         phone,
         lat,
         lng,
+        zip,
         providerName,
         providerDescription
     } = req.body;
@@ -686,6 +693,7 @@ export const setUser = async (req, res = response) => {
 
         if(lat != null || lat != '') updateData.provider_lat = lat;
         if(lng != null || lng != '') updateData.provider_lng = lng;
+        if(zip != null || zip != '') updateData.zip = zip;
 
         if(providerImage != null && providerImage != undefined && provider_image != null && provider_image != '') {
             const resDelete = await deleteImage(provider_image);
@@ -793,6 +801,7 @@ export const setUser = async (req, res = response) => {
                         'provider_description',
                         'provider_lat',
                         'provider_lng',
+                        'zip',
                         'profile.id_profile',
                         'profile.profile_state',
                         'profile.email',

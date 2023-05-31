@@ -30,6 +30,7 @@ export const getAllProviders = async (req, res = response) => {
                 'provider_description',
                 'provider_lat',
                 'provider_lng',
+                'zip',
                 'provider_image',
                 'profile.id_profile',
                 'profile.email',
@@ -67,6 +68,7 @@ export const getProvider = async (req, res = response) => {
                 'provider_description',
                 'provider_lat',
                 'provider_lng',
+                'zip',
                 'profile.id_profile',
                 'profile.email',
                 'profile.profile_state',
@@ -271,6 +273,7 @@ export const updateProvider = async (req, res = response) => {
     const {
         lat,
         lng,
+        zip,
         providerName,
         providerDescription,
         phone,
@@ -287,6 +290,7 @@ export const updateProvider = async (req, res = response) => {
 
     if(lat != null && lat != '') dataUpdate.provider_lat = lat;
     if(lng != null && lng != '') dataUpdate.provider_lng = lng;
+    if(zip != null && zip != '') dataUpdate.zip = zip;
     if(providerName != null && providerName != '') dataUpdate.provider_name = providerName;
     if(providerDescription != null && providerDescription != '') dataUpdate.provider_description = providerDescription;
     if(phone != null && phone != '') dataUpdate.phone = phone;
@@ -338,6 +342,7 @@ export const updateProvider = async (req, res = response) => {
                     'provider_description',
                     'provider_lat',
                     'provider_lng',
+                    'zip',
                     'profile.id_profile',
                     'profile.email',
                     'profile.profile_state',

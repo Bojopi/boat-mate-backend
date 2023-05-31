@@ -1,6 +1,5 @@
 import { response } from "express"
 import { Profile } from "../models/Profile.js";
-import bcrypjs from 'bcrypt'
 import { generateJWT } from "../helpers/generate-jwt.js";
 import { Person } from "../models/Person.js";
 import { Role } from "../models/Role.js";
@@ -10,7 +9,6 @@ import { googleVerify } from "../helpers/google-verify.js";
 import { Provider } from "../models/Provider.js";
 import { Customer } from "../models/Customer.js";
 import { decryptPassword, encriptPassword } from "../utils/bcryp.js";
-import { sequelize } from "../database/database.js";
 import { Service } from "../models/Service.js";
 import { Op } from "sequelize";
 
@@ -79,6 +77,7 @@ export const login = async (req, res = response) => {
                     'provider_description',
                     'provider_lat',
                     'provider_lng',
+                    'zip',
                     'profile.id_profile',
                     'profile.profile_state',
                     'profile.email',
@@ -339,6 +338,7 @@ export const createProfile = async (req, res = response) => {
             phone,
             lat,
             lng,
+            zip,
             providerName,
             services
         } = req.body
@@ -362,6 +362,7 @@ export const createProfile = async (req, res = response) => {
                 provider_name: providerName,
                 provider_lat: lat,
                 provider_lng: lng,
+                zip: zip,
                 provider_image: null,
                 profile: {
                     email: email,
@@ -408,6 +409,7 @@ export const createProfile = async (req, res = response) => {
                     'provider_description',
                     'provider_lat',
                     'provider_lng',
+                    'zip',
                     'profile.id_profile',
                     'profile.profile_state',
                     'profile.email',
