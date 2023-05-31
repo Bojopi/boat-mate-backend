@@ -26,6 +26,9 @@ export const Provider = sequelize.define('providers', {
     provider_lng: {
         type: DataTypes.STRING,
     },
+    zip: {
+        type: DataTypes.INTEGER
+    }
 }, {
     timestamps: false
 });

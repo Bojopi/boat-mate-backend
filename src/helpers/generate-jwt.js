@@ -21,6 +21,7 @@ export const generateJWT = ( profile ) => {
         provider_description,
         provider_lat,
         provider_lng,
+        zip,
         id_customer,
         customer_lat,
         customer_lng,
@@ -44,6 +45,7 @@ export const generateJWT = ( profile ) => {
             providerDescription: provider_description,
             providerLat: provider_lat,
             providerLng: provider_lng,
+            zip: zip,
             idCustomer: id_customer,
             customerLat: customer_lat,
             customerLng: customer_lng
