@@ -18,8 +18,7 @@ router.get('/contract/:idContract', [
 
 router.get('/contract-provider/:idProvider', [
     validateJWTExpired,
-    validateJWT,
-    validateRol('ADMIN', 'SUPERADMIN', 'PROVIDER')
+    validateJWT
 ], getContracsProvider);
 
 router.post('/contract/:idCustomer', [
