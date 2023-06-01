@@ -196,10 +196,30 @@ export const getContracsProvider = async (req, res = response) => {
                     }]
                 }]
             }],
-            raw: true
+            raw: true,
         });
 
-        res.status(200).json({contracts});
+        const count = await Contract.count({
+            include: [{
+                model: ServiceProviders,
+                attributes: [],
+                where: {providerIdProvider: idProvider}
+            }, {
+                model: Customer,
+                attributes: [],
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    }]
+                }]
+            }],
+            raw: true,
+        });
+
+        res.status(200).json({contracts, count});
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
