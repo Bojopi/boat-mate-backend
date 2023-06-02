@@ -57,7 +57,7 @@ export const findByNameService = async (req, res = response) => {
             include: [{
                 model: ServiceProviders,
                 include: [{
-                    model: Provider,
+                    model: Provider
                 }]
             }]
         });
