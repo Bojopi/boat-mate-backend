@@ -185,7 +185,33 @@ export const getRatingProvider = async (req, res = response) => {
             order: [['rating_date', 'DESC']],
             raw: true
         })
-        res.status(200).json({ rating });
+
+        const countRating = await Rating.count({
+            include: [{
+                model: ServiceProviders,
+                attributes: [],
+                where: {providerIdProvider: idProvider},
+                include: [{
+                    model: Provider,
+                    attributes: []
+                }, {
+                    model: Service,
+                    attributes: []
+                }]
+            }, {
+                model: Customer,
+                attributes: [],
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    }]
+                }]
+            }]
+        })
+        res.status(200).json({ countRating, rating });
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
