@@ -11,6 +11,7 @@ import { serialize } from "cookie";
 import { Role } from "../models/Role.js";
 import fs from 'fs'
 import path from "path";
+import { ServiceProviders } from "../models/ServiceProviders.js";
 
 export const getUsersAll = async (req, res = response) => {
 
@@ -95,6 +96,16 @@ export const activateProfile = async (req, res = response) => {
         }, {
             where: {id_profile: idProfile},
             returning: ['profile_state']
+        });
+
+        const {id_provider} = await Provider.findOne({
+            where: {profileId: idProfile}
+        })
+
+        await ServiceProviders.update({
+            service_provider_state: true
+        }, {
+            where: {providerIdProvider: id_provider}
         });
 
         res.status(200).json({msg: 'Successfully activated', profile});
@@ -362,6 +373,16 @@ export const deleteProfile = async (req, res = response) => {
         }, {
             where: {id_profile: idProfile}
         })
+
+        const {id_provider} = await Provider.findOne({
+            where: {profileId: idProfile}
+        })
+
+        await ServiceProviders.update({
+            service_provider_state: false
+        }, {
+            where: {providerIdProvider: id_provider}
+        });
 
         res.status(200).json({
             msg: `Profile deleted`
