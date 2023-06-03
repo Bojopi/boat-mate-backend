@@ -161,7 +161,8 @@ export const login = async (req, res = response) => {
         res.setHeader('Set-Cookie', serialized)
 
         return res.json({
-            msg: 'Login successfully'
+            msg: 'Login successfully',
+            role: profile.role_description
         });
     } catch (error) {
         return res.status(400).json({message: error.message});
