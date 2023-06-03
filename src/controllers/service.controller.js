@@ -6,6 +6,7 @@ import { Category } from "../models/Category.js";
 import { Op } from "sequelize";
 import { Provider } from "../models/Provider.js";
 import { ServiceProviders } from "../models/ServiceProviders.js";
+import { Profile } from "../models/Profile.js";
 
 export const getAllServices = async (req, res) => {
     try {
@@ -57,7 +58,10 @@ export const findByNameService = async (req, res = response) => {
             include: [{
                 model: ServiceProviders,
                 include: [{
-                    model: Provider
+                    model: Provider,
+                    include: [{
+                        model: Profile
+                    }]
                 }]
             }]
         });
