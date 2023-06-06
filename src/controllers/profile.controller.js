@@ -220,7 +220,6 @@ export const setDataProfile = async (req, res = response) => {
         providerImage = provImg;
         personImage = perImg;
     }
-    console.log(personImage)
 
     const { id } = req.params;
 
@@ -264,8 +263,6 @@ export const setDataProfile = async (req, res = response) => {
         updateData.person_image = result.secure_url;
         fs.unlinkSync(path.join(personImage.tempFilePath));
     }
-
-    console.log(updateData)
 
     //validate the role
     if(roleId == 4) {
@@ -315,8 +312,6 @@ export const setDataProfile = async (req, res = response) => {
                 where: { id_person: personId },
                 transaction: t
             })
-
-            console.log(updateData)
 
             await Profile.update(updateData, {
                 where: { id_profile: id },
