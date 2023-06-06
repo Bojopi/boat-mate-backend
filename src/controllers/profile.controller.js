@@ -66,6 +66,88 @@ export const setRoleUser = async (req, res = response) => {
                 }],
             raw: true,
         });
+
+        if(role == 3) {
+            await Provider.create({
+                profileId: idProfile
+            });
+
+            resUser = await Provider.findOne({
+                attributes: [
+                    'id_provider',
+                    'provider_name',
+                    'provider_image',
+                    'provider_description',
+                    'provider_lat',
+                    'provider_lng',
+                    'zip',
+                    'profile.id_profile',
+                    'profile.profile_state',
+                    'profile.email',
+                    'profile.google',
+                    'profile.person.id_person',
+                    'profile.person.person_name',
+                    'profile.person.lastname',
+                    'profile.person.phone',
+                    'profile.person.person_image',
+                    'profile.role.id_role',
+                    'profile.role.role_description',
+                ],
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    where: {
+                        id_profile: idProfile
+                    },
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    },
+                    {
+                        model: Role,
+                        attributes: []
+                    }]
+                }],
+                raw: true
+            })
+        } else {
+            await Customer.create({profileId: idProfile})
+
+            resUser = await Customer.findOne({
+                attributes: [
+                    'id_customer',
+                    'customer_lat',
+                    'customer_lng',
+                    'profile.id_profile',
+                    'profile.profile_state',
+                    'profile.email',
+                    'profile.google',
+                    'profile.person.id_person',
+                    'profile.person.person_name',
+                    'profile.person.lastname',
+                    'profile.person.phone',
+                    'profile.person.person_image',
+                    'profile.role.id_role',
+                    'profile.role.role_description',
+                ],
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    where: {
+                        id_profile: idProfile
+                    },
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    },
+                    {
+                        model: Role,
+                        attributes: []
+                    }]
+                }],
+                raw: true
+            })
+        }
         
         //update the jwt
         const token = await updateJWT(resUser, tokenUser);
@@ -138,6 +220,7 @@ export const setDataProfile = async (req, res = response) => {
         providerImage = provImg;
         personImage = perImg;
     }
+    console.log(personImage)
 
     const { id } = req.params;
 
@@ -176,7 +259,13 @@ export const setDataProfile = async (req, res = response) => {
             updateData.person_image = result.secure_url;
             fs.unlinkSync(path.join(personImage.tempFilePath));
         }
+    } else if(personImage != null && personImage != undefined) {
+        const result = await uploadImage(personImage.tempFilePath);
+        updateData.person_image = result.secure_url;
+        fs.unlinkSync(path.join(personImage.tempFilePath));
     }
+
+    console.log(updateData)
 
     //validate the role
     if(roleId == 4) {
@@ -212,6 +301,10 @@ export const setDataProfile = async (req, res = response) => {
                 updateData.provider_image = result.secure_url;
                 fs.unlinkSync(path.join(providerImage.tempFilePath));
             }
+        } else if(providerImage != null && providerImage != undefined) {
+            const result = await uploadImage(providerImage.tempFilePath);
+            updateData.provider_image = result.secure_url;
+            fs.unlinkSync(path.join(providerImage.tempFilePath));
         }
     }
 
@@ -222,6 +315,8 @@ export const setDataProfile = async (req, res = response) => {
                 where: { id_person: personId },
                 transaction: t
             })
+
+            console.log(updateData)
 
             await Profile.update(updateData, {
                 where: { id_profile: id },

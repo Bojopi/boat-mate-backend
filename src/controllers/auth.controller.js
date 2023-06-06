@@ -269,13 +269,89 @@ export const googleSignIn = async (req, res = response) => {
             })
 
             newUser = true;
-        }
-
-        //if the user exists but is disabled
-        if(!user.profile_state) {
+        } else if(!user.profile_state) { //if the user exists but is disabled
             return res.status(401).json({
                 msg: 'User is disabled'
             })
+        } else {
+            // check role
+            if(user.role_description === 'PROVIDER') {
+                user = await Provider.findOne({
+                    attributes: [
+                        'id_provider',
+                        'provider_name',
+                        'provider_image',
+                        'provider_description',
+                        'provider_lat',
+                        'provider_lng',
+                        'zip',
+                        'profile.id_profile',
+                        'profile.profile_state',
+                        'profile.email',
+                        'profile.google',
+                        'profile.person.id_person',
+                        'profile.person.person_name',
+                        'profile.person.lastname',
+                        'profile.person.phone',
+                        'profile.person.person_image',
+                        'profile.role.id_role',
+                        'profile.role.role_description',
+                    ],
+                    include: [{
+                        model: Profile,
+                        attributes: [],
+                        where: {
+                            id_profile: user.id_profile
+                        },
+                        include: [{
+                            model: Person,
+                            attributes: []
+                        },
+                        {
+                            model: Role,
+                            attributes: []
+                        }]
+                    }],
+                    raw: true
+                })
+            }
+
+            if(user.role_description === 'CUSTOMER') {
+                user = await Customer.findOne({
+                    attributes: [
+                        'id_customer',
+                        'customer_lat',
+                        'customer_lng',
+                        'profile.id_profile',
+                        'profile.profile_state',
+                        'profile.email',
+                        'profile.google',
+                        'profile.person.id_person',
+                        'profile.person.person_name',
+                        'profile.person.lastname',
+                        'profile.person.phone',
+                        'profile.person.person_image',
+                        'profile.role.id_role',
+                        'profile.role.role_description',
+                    ],
+                    include: [{
+                        model: Profile,
+                        attributes: [],
+                        where: {
+                            id_profile: user.id_profile
+                        },
+                        include: [{
+                            model: Person,
+                            attributes: []
+                        },
+                        {
+                            model: Role,
+                            attributes: []
+                        }]
+                    }],
+                    raw: true
+                })
+            }
         }
 
         //generate the jwt
@@ -304,7 +380,6 @@ export const googleSignIn = async (req, res = response) => {
 
 export const logout = (req, res = response) => {
     const { tokenUser } = req.cookies;
-    console.log(tokenUser)
 
     if(!tokenUser) {
         return res.status(401).json({ msg: 'Unauthorized' })
@@ -497,7 +572,6 @@ export const createProfile = async (req, res = response) => {
                 raw: true
             });
         }
-
 
         // generate the jwt
         const token = await generateJWT(user);

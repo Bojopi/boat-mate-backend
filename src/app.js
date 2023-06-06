@@ -4,11 +4,14 @@ import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
+import http from 'http';
+import { Server } from 'socket.io';
 
 const app = express();
+const server = http.createServer(app);
 
 //settings
-app.set('port', process.env.PORT || 8080)
+// app.set('port', process.env.PORT || 8080)
 
 //routes
 import rolRoutes from './routes/rol.routes.js';
@@ -71,6 +74,19 @@ apiRouter.use(profileRoutes);
 apiRouter.use(portofolioRoutes);
 apiRouter.use(contractRoutes);
 
+//Sockets
+const io = new Server(server, {
+    cors: allowedOrigins
+});
+
+// io.origins(allowedOrigins)
+
+io.on('connection', (socket) => {
+    console.log('a client connected');
+
+    //socket events
+  });
 
 
-export default app;
+
+export default server;

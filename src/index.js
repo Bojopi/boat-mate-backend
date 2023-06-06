@@ -3,6 +3,8 @@ import app from './app.js';
 import env from 'dotenv';
 env.config();
 
+const port = process.env.PORT || 8080;
+
 import { sequelize } from './database/database.js';
 
 // Models
@@ -22,11 +24,13 @@ import './models/ServiceCategories.js';
 import './models/ServicePreferences.js';
 import './models/ServiceProviders.js';
 
+
 const connect = async () => {
     try {
         // await sequelize.sync({alter: true})
-        app.listen(app.get('port'))
-        console.log('listening on port 8080');
+        app.listen(port, () => {
+            console.log('listening on port 8080');
+        })
     } catch (error) {
         console.log('Unable to connect', error);
     }
