@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { validateJWT, validateJWTExpired } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
-import { createContract, getContracsProvider, getContracts, getOneContract, updateContract, updateState } from '../controllers/contract.controller.js';
+import { createContract, getContracsCustomer, getContracsProvider, getContracts, getOneContract, updateContract, updateState } from '../controllers/contract.controller.js';
 
 const router = Router();
 
@@ -21,6 +21,11 @@ router.get('/contract-provider/:idProvider', [
     validateJWT
 ], getContracsProvider);
 
+router.get('/contract-customer/:idCustomer', [
+    validateJWTExpired,
+    validateJWT
+], getContracsCustomer);
+
 router.post('/contract/:idCustomer', [
     validateJWTExpired,
     validateJWT,
@@ -35,8 +40,7 @@ router.post('/update-contract/:idContract', [
 
 router.post('/state-contract/:idContract', [
     validateJWTExpired,
-    validateJWT,
-    validateRol('ADMIN', 'SUPERADMIN', 'PROVIDER')
+    validateJWT
 ], updateState);
 
 export default router;

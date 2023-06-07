@@ -225,6 +225,77 @@ export const getContracsProvider = async (req, res = response) => {
     }
 };
 
+export const getContracsCustomer = async (req, res = response) => {
+    const {idCustomer} = req.params;
+
+    try {
+        const contracts = await Contract.findAll({
+            attributes: [
+                'id_contract',
+                'contract_date',
+                'contract_state',
+                'contract_description',
+                'price',
+                'service_provider.service_provider_state',
+                'service_provider.provider.id_provider',
+                'service_provider.provider.provider_name',
+                'service_provider.provider.provider_lat',
+                'service_provider.provider.provider_lng',
+                'service_provider.provider.zip',
+                'service_provider.provider.provider_image',
+                'service_provider.provider.profile.email',
+                'service_provider.provider.profile.person.person_name',
+                'service_provider.provider.profile.person.lastname',
+                'service_provider.provider.profile.person.phone'
+            ],
+            where: {customerIdCustomer: idCustomer},
+            include: [{
+                model: ServiceProviders,
+                attributes: [],
+                include: [{
+                    model: Provider,
+                    attributes: [],
+                    include: [{
+                        model: Profile,
+                        attributes: [],
+                        include: [{
+                            model: Person,
+                            attributes: []
+                        }]
+                    }]
+                }]
+            }],
+            order: [['contract_date', 'DESC']],
+            raw: true,
+        });
+
+        const count = await Contract.count({
+            where: {customerIdCustomer: idCustomer},
+            include: [{
+                model: ServiceProviders,
+                attributes: [],
+                include: [{
+                    model: Provider,
+                    attributes: [],
+                    include: [{
+                        model: Profile,
+                        attributes: [],
+                        include: [{
+                            model: Person,
+                            attributes: []
+                        }]
+                    }]
+                }]
+            }],
+            raw: true,
+        });
+
+        res.status(200).json({contracts, count});
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+};
+
 export const updateState = async (req, res = response) => {
     const {idContract} = req.params;
     const {contractState} = req.body;
@@ -237,7 +308,10 @@ export const updateState = async (req, res = response) => {
             returning: true
         });
 
-        res.status(200).json({contract});
+        res.status(200).json({
+            msg: 'Contract updated',
+            contract
+        });
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
