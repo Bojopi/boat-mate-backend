@@ -79,8 +79,6 @@ const io = new Server(server, {
     cors: allowedOrigins
 });
 
-// io.origins(allowedOrigins)
-
 io.on('connection', (socket) => {
     console.log('a client connected');
 
@@ -89,4 +87,4 @@ io.on('connection', (socket) => {
 
 
 
-export default app;
+export default server;
