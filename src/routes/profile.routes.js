@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { validateJWT, validateJWTExpired } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
-import { activateProfile, createUserProfile, deleteProfile, getUser, getUsersAll, setDataProfile, setRoleUser, setUser } from '../controllers/profile.controller.js';
+import { activateProfile, createUserProfile, deleteProfile, getUser, getUsersAll, resetPassword, setDataProfile, setRoleUser, setUser } from '../controllers/profile.controller.js';
 
 const router = Router();
 
@@ -44,5 +44,7 @@ router.post('/activate-profile/:idProfile', [
     validateJWT,
     validateRol('ADMIN', 'SUPERADMIN')
 ], activateProfile);
+
+router.post('/reset-password', resetPassword)
 
 export default router;

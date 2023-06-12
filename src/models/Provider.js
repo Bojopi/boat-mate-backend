@@ -27,7 +27,7 @@ export const Provider = sequelize.define('providers', {
         type: DataTypes.STRING,
     },
     zip: {
-        type: DataTypes.INTEGER
+        type: DataTypes.STRING
     }
 }, {
     timestamps: false

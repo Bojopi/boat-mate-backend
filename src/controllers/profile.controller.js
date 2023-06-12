@@ -950,3 +950,23 @@ export const setUser = async (req, res = response) => {
         return res.status(400).json({msg: error.message});
     }
 }
+
+export const resetPassword = async (req, res = response) => {
+    const {email, password} = req.body;
+
+    try {
+        const pass = await encriptPassword(password);
+
+        await Profile.update({
+            password: pass
+        }, {
+            where: {email: email}
+        })
+
+        res.status(200).json({
+            msg: 'Password updated correctly'
+        })
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+}

@@ -477,7 +477,7 @@ export const createProfile = async (req, res = response) => {
                 returning: true,
             });
 
-            if(services.length > 0) {
+            if(services && services.length > 0) {
                 const servicesId = services.map((service) => service.id_service);
     
                 const existingService = await Service.findAll({
@@ -608,18 +608,90 @@ export const createProfile = async (req, res = response) => {
 }
 
 export const sendMail = async (req, res = response) => {
-    const { address, content, subject } = req.body;
+    const { address, subject } = req.body;
 
     try {
-        const info = await transporter.sendMail({
-            from: 'tech@boatmate.com',
-            to: address,
-            subject: subject,
-            html: content
+
+        const profile = await Profile.findOne({
+            where: {email: address}
         });
 
-        console.log('E-mail sent:', info.messageId);
-        return res.status(200).json({ msg: 'Email sent successfully' });
+        if(profile) {
+            const info = await transporter.sendMail({
+                from: 'tech@boatmate.com',
+                to: address,
+                subject: subject,
+                html: `
+                <head>
+                    <title>Reset Your Password</title>
+                    <style>
+                        body {
+                            background-color: #109EDA;
+                            font-family: Arial, sans-serif;
+                            color: #373A85;
+                            margin: 0;
+                            padding: 0;
+                        }
+                
+                        .container {
+                            max-width: 600px;
+                            margin: 0 auto;
+                            padding: 20px;
+                        }
+                
+                        h1 {
+                            color: #00CBA4;
+                        }
+                
+                        .message {
+                            background-color: #f8f9fa;
+                            padding: 20px;
+                            border-radius: 5px;
+                        }
+                
+                        .footer {
+                            text-align: center;
+                            margin-top: 20px;
+                            color: #FFFFFF;
+                        }
+              
+                        .btn {
+                          color: #FFFFFF !important;
+                          font-size: 1rem;
+                          background-color: #2196F3;
+                          border: 1px solid #2196F3;
+                          padding: 0.5rem 1rem;
+                          border-radius: 3px;
+                          text-decoration: none;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h1>Reset Your Password</h1>
+                        <div class="message">
+                            <p>Hello,</p>
+                            <p>We have received a request to reset your password on BoatMate. To complete the password reset process, press the button below:</p>
+                            <a class="btn" href='http://localhost:3000/reset-password/${address} target='_blank'>Reset your password</a>
+                            <p>If you didn't request to reset your password, please ignore this email and take no further action.</p>
+                            <p>If you have any questions or need additional assistance, please contact us at <a href="mailto:tech@boatmate.com">tech@boatmate.com</a>.</p>
+                            <p>Thank you and best regards,</p>
+                            <p>The BoatMate Team</p>
+                        </div>
+                        <div class="footer">
+                            <p>&copy; 2023 BoatMate. All rights reserved.</p>
+                        </div>
+                    </div>
+                </body>
+                `
+            });
+    
+            console.log('E-mail sent:', info.messageId);
+            res.status(200).json({ msg: 'Email sent successfully' });
+        } else {
+            res.status(400).json({msg: 'Mail is not registered'})
+        }
+
     } catch (error) {
         console.error('Error sending the e-mail:', error);
         return res.status(400).json({msg: error.message})
