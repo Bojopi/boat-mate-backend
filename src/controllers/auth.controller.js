@@ -11,6 +11,18 @@ import { Customer } from "../models/Customer.js";
 import { decryptPassword, encriptPassword } from "../utils/bcryp.js";
 import { Service } from "../models/Service.js";
 import { Op } from "sequelize";
+import AWS from 'aws-sdk';
+import nodemailer from 'nodemailer'
+
+const transporter = nodemailer.createTransport({
+    SES: new AWS.SES({
+        region: 'us-east-1',
+        credentials: {
+            accessKeyId: 'AKIAT5YN6ZSDPA2ISI6N',
+            secretAccessKey: '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'
+        }
+    })
+})
 
 export const login = async (req, res = response) => {
 
@@ -591,6 +603,25 @@ export const createProfile = async (req, res = response) => {
             msg: 'Register successfully'
         });
     } catch (error) {
+        return res.status(400).json({msg: error.message})
+    }
+}
+
+export const sendMail = async (req, res = response) => {
+    const { address, content, subject } = req.body;
+
+    try {
+        const info = await transporter.sendMail({
+            from: 'tech@boatmate.com',
+            to: address,
+            subject: subject,
+            html: content
+        });
+
+        console.log('E-mail sent:', info.messageId);
+        return res.status(200).json({ msg: 'Email sent successfully' });
+    } catch (error) {
+        console.error('Error sending the e-mail:', error);
         return res.status(400).json({msg: error.message})
     }
 }

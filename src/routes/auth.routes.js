@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { createProfile, getUser, googleSignIn, login, logout } from '../controllers/auth.controller.js';
+import { createProfile, getUser, googleSignIn, login, logout, sendMail } from '../controllers/auth.controller.js';
 import { validateFields } from '../middlewares/validate-fields.js';
 
 
@@ -22,6 +22,8 @@ router.post('/create-profile', createProfile);
 router.get('/profile', getUser);
 
 router.post('/logout', logout);
+
+router.post('/send-mail', sendMail);
 
 
 export default router;
