@@ -672,7 +672,7 @@ export const sendMail = async (req, res = response) => {
                         <div class="message">
                             <p>Hello,</p>
                             <p>We have received a request to reset your password on BoatMate. To complete the password reset process, press the button below:</p>
-                            <a class="btn" href='http://localhost:3000/reset-password/${address} target='_blank'>Reset your password</a>
+                            <a class="btn" href='https://boatmate.com/reset-password/${address} target='_blank'>Reset your password</a>
                             <p>If you didn't request to reset your password, please ignore this email and take no further action.</p>
                             <p>If you have any questions or need additional assistance, please contact us at <a href="mailto:tech@boatmate.com">tech@boatmate.com</a>.</p>
                             <p>Thank you and best regards,</p>
