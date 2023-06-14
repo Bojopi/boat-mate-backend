@@ -21,10 +21,11 @@ export const generateJWT = ( profile ) => {
         provider_description,
         provider_lat,
         provider_lng,
-        zip,
+        provider_zip,
         id_customer,
         customer_lat,
         customer_lng,
+        customer_zip,
         } = profile
 
         const payload = {
@@ -45,10 +46,11 @@ export const generateJWT = ( profile ) => {
             providerDescription: provider_description,
             providerLat: provider_lat,
             providerLng: provider_lng,
-            zip: zip,
+            providerZip: provider_zip,
             idCustomer: id_customer,
             customerLat: customer_lat,
-            customerLng: customer_lng
+            customerLng: customer_lng,
+            customerZip: customer_zip
         }
 
         jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "23h"},
@@ -82,13 +84,14 @@ export const updateJWT = async (profile, tokenUser) => {
             id_provider,
             provider_name,
             provider_image,
-            zip,
+            provider_zip,
             provider_description,
             provider_lat,
             provider_lng,
             id_customer,
             customer_lat,
             customer_lng,
+            customer_zip
             } = profile
 
         const payload = {
@@ -106,13 +109,14 @@ export const updateJWT = async (profile, tokenUser) => {
             idProvider: id_provider,
             providerName: provider_name,
             providerImage: provider_image,
-            zip: zip,
+            providerZip: provider_zip,
             providerDescription: provider_description,
             providerLat: provider_lat,
             providerLng: provider_lng,
             idCustomer: id_customer,
             customerLat: customer_lat,
-            customerLng: customer_lng
+            customerLng: customer_lng,
+            customerZip: customer_zip
         }
 
 

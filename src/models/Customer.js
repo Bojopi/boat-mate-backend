@@ -19,6 +19,9 @@ export const Customer = sequelize.define('customers', {
     customer_lng: {
         type: DataTypes.STRING
     },
+    customer_zip: {
+        type: DataTypes.STRING
+    }
 }, {
     timestamps: false
 });

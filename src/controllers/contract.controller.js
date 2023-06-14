@@ -237,11 +237,12 @@ export const getContracsCustomer = async (req, res = response) => {
                 'contract_description',
                 'price',
                 'service_provider.service_provider_state',
+                'service_provider.service.service_name',
                 'service_provider.provider.id_provider',
                 'service_provider.provider.provider_name',
                 'service_provider.provider.provider_lat',
                 'service_provider.provider.provider_lng',
-                'service_provider.provider.zip',
+                'service_provider.provider.provider_zip',
                 'service_provider.provider.provider_image',
                 'service_provider.provider.profile.email',
                 'service_provider.provider.profile.person.person_name',
@@ -253,6 +254,9 @@ export const getContracsCustomer = async (req, res = response) => {
                 model: ServiceProviders,
                 attributes: [],
                 include: [{
+                    model: Service,
+                    attributes: []
+                }, {
                     model: Provider,
                     attributes: [],
                     include: [{
