@@ -7,6 +7,9 @@ import { Op } from "sequelize";
 import { Provider } from "../models/Provider.js";
 import { ServiceProviders } from "../models/ServiceProviders.js";
 import { Profile } from "../models/Profile.js";
+import { Rating } from "../models/Rating.js";
+import { sequelize } from "../database/database.js";
+import { uploadImageService } from "../utils/cloudinary.js";
 
 export const getAllServices = async (req, res) => {
     try {
@@ -75,11 +78,26 @@ export const findByNameService = async (req, res = response) => {
 export const createService = async (req, res = response) => {
     const { serviceName, serviceDescription, categories } = req.body;
 
+    let serviceImage;
+    if(req.files) {
+        const {serviceImage: servImage} = req.files;
+        serviceImage = servImage;
+    }
+
     try {
+
+        let newImage = null;
+        if(serviceImage != null && serviceImage != undefined) {
+            const result = await uploadImageService(serviceImage.tempFilePath);
+            newImage = result.secure_url;
+            fs.unlinkSync(path.join(serviceImage.tempFilePath));
+        }
+
         let service;
         service = await Service.create({
             service_name: serviceName,
-            service_description: serviceDescription
+            service_description: serviceDescription,
+            service_image: newImage
         }, {
             returning: true
         });
@@ -235,6 +253,42 @@ export const getProvidersService = async (req, res = response) => {
         });
 
         res.status(200).json({providers});
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+};
+
+export const getPopularServicesByZip = async (req, res = response) => {
+    const {zip} = req.params;
+
+    try {
+        const services = await Rating.findAll({
+            attributes:[
+                'serviceProviderId',
+                [sequelize.fn('COUNT', sequelize.col('rating')), 'count'],
+                [sequelize.fn('AVG', sequelize.col('rating')), 'averageRating']
+            ],
+            include: [
+                {
+                    model: ServiceProviders,
+                    attributes: ['id_service_provider'],
+                    include: [
+                        {
+                            model: Service
+                        },
+                        {
+                            model: Provider,
+                            attributes: [],
+                            where: {provider_zip: zip}
+                        }
+                    ]
+                }
+            ],
+            group: ['serviceProviderId', 'service_provider.id_service_provider', 'service_provider.service.id_service'],
+            order: [[sequelize.literal('count'), 'DESC']]
+        })
+
+        res.status(200).json({services});
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }

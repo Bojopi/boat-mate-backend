@@ -7,14 +7,12 @@ const router = Router();
 
 router.get('/customers', [
     validateJWTExpired,
-    validateJWT,
-    validateRol('ADMIN', 'SUPERADMIN')
+    validateJWT
 ], getCustomers);
 
 router.get('/customer/:idCustomer', [
     validateJWTExpired,
-    validateJWT,
-    validateRol('ADMIN', 'SUPERADMIN')
+    validateJWT
 ], getCustomer);
 
 export default router;

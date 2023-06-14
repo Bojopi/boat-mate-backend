@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { validateJWT, validateJWTExpired } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
-import { activateService, addCategory, createService, deleteCategory, deleteService, findByNameService, getAllServices, getCategoriesService, getOneService, getProvidersService, updateService } from '../controllers/service.controller.js';
+import { activateService, addCategory, createService, deleteCategory, deleteService, findByNameService, getAllServices, getCategoriesService, getOneService, getPopularServicesByZip, getProvidersService, updateService } from '../controllers/service.controller.js';
 
 const router = Router();
 
@@ -22,6 +22,8 @@ router.get('/service-categories/:idService', [
 router.post('/provider-service',  findByNameService);
 
 router.get('/provider-service/:idService',  getProvidersService);
+
+router.get('/popular-services/:zip',  getPopularServicesByZip);
 
 router.post('/service/:idService', [
     validateJWTExpired,

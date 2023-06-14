@@ -18,6 +18,9 @@ export const Service = sequelize.define('services', {
     service_state: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
+    },
+    service_image: {
+        type: DataTypes.STRING
     }
 }, {
     timestamps: false

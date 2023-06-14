@@ -24,6 +24,12 @@ export const uploadImage = async (imgPath) => {
     });
 }
 
+export const uploadImageService = async (imgPath) => {
+    return await cloudinary.uploader.upload(imgPath, {
+        folder: 'services'
+    });
+}
+
 export const uploadImages = async (idProvider, files, description) => {
     const urls = [];
     for(const file of files) {

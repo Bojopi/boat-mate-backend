@@ -80,7 +80,7 @@ export const setRoleUser = async (req, res = response) => {
                     'provider_description',
                     'provider_lat',
                     'provider_lng',
-                    'zip',
+                    'provider_zip',
                     'profile.id_profile',
                     'profile.profile_state',
                     'profile.email',
@@ -118,6 +118,7 @@ export const setRoleUser = async (req, res = response) => {
                     'id_customer',
                     'customer_lat',
                     'customer_lng',
+                    'customer_zip',
                     'profile.id_profile',
                     'profile.profile_state',
                     'profile.email',
@@ -275,6 +276,7 @@ export const setDataProfile = async (req, res = response) => {
 
         if(lat != null || lat != '') updateData.customer_lat = lat;
         if(lng != null || lng != '') updateData.customer_lng = lng;
+        if(zip != null || zip != '') updateData.customer_zip = zip;
 
     } else if(roleId == 3) {
         const {id_provider, provider_image} = await Provider.findOne({
@@ -289,7 +291,7 @@ export const setDataProfile = async (req, res = response) => {
 
         if(lat != null || lat != '') updateData.provider_lat = lat;
         if(lng != null || lng != '') updateData.provider_lng = lng;
-        if(zip != null || zip != '') updateData.zip = zip;
+        if(zip != null || zip != '') updateData.provider_zip = zip;
 
         if(providerImage != null && providerImage != undefined && provider_image != null && provider_image != '') {
             const resDelete = await deleteImage(provider_image);
@@ -357,6 +359,7 @@ export const setDataProfile = async (req, res = response) => {
                         'id_customer',
                         'customer_lat',
                         'customer_lng',
+                        'customer_zip',
                         'profile.id_profile',
                         'profile.profile_state',
                         'profile.email',
@@ -401,7 +404,7 @@ export const setDataProfile = async (req, res = response) => {
                         'provider_description',
                         'provider_lat',
                         'provider_lng',
-                        'zip',
+                        'provider_zip',
                         'profile.id_profile',
                         'profile.profile_state',
                         'profile.email',
@@ -546,7 +549,7 @@ export const createUserProfile = async (req, res = response) => {
                     provider_name: providerName,
                     provider_lat: lat,
                     provider_lng: lng,
-                    zip: zip,
+                    provider_zip: zip,
                     provider_description: providerDescription,
                     provider_image: newProvImage,
                     profile: {
@@ -584,6 +587,7 @@ export const createUserProfile = async (req, res = response) => {
                 const {profileId} = await Customer.create({
                     customer_lat: lat,
                     customer_lng: lng,
+                    customer_zip: zip,
                     profile: {
                         email: email,
                         password: pass,
@@ -653,7 +657,7 @@ export const getUser = async (req, res = response) => {
                         'provider_description',
                         'provider_lat',
                         'provider_lng',
-                        'zip',
+                        'provider_zip',
                         'profile.id_profile',
                         'profile.email',
                         'profile.profile_state',
@@ -685,6 +689,7 @@ export const getUser = async (req, res = response) => {
                     attributes: [
                         'customer_lat',
                         'customer_lng',
+                        'customer_zip',
                         'profile.id_profile',
                         'profile.email',
                         'profile.profile_state',
@@ -790,6 +795,7 @@ export const setUser = async (req, res = response) => {
 
         if(lat != null || lat != '') updateData.customer_lat = lat;
         if(lng != null || lng != '') updateData.customer_lng = lng;
+        if(zip != null || zip != '') updateData.customer_zip = zip;
 
     } else if(idRole == 3) {
         const {id_provider, provider_image} = await Provider.findOne({
@@ -804,7 +810,7 @@ export const setUser = async (req, res = response) => {
 
         if(lat != null || lat != '') updateData.provider_lat = lat;
         if(lng != null || lng != '') updateData.provider_lng = lng;
-        if(zip != null || zip != '') updateData.zip = zip;
+        if(zip != null || zip != '') updateData.provider_zip = zip;
 
         if(providerImage != null && providerImage != undefined && provider_image != null && provider_image != '') {
             const resDelete = await deleteImage(provider_image);
@@ -868,6 +874,7 @@ export const setUser = async (req, res = response) => {
                         'id_customer',
                         'customer_lat',
                         'customer_lng',
+                        'customer_zip',
                         'profile.id_profile',
                         'profile.profile_state',
                         'profile.email',
@@ -912,7 +919,7 @@ export const setUser = async (req, res = response) => {
                         'provider_description',
                         'provider_lat',
                         'provider_lng',
-                        'zip',
+                        'provider_zip',
                         'profile.id_profile',
                         'profile.profile_state',
                         'profile.email',
