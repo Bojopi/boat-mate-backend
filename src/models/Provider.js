@@ -28,6 +28,10 @@ export const Provider = sequelize.define('providers', {
     },
     provider_zip: {
         type: DataTypes.STRING
+    },
+    provider_license: {
+        type: DataTypes.STRING,
+        defaultValue: ''
     }
 }, {
     timestamps: false

@@ -24,6 +24,12 @@ export const uploadImage = async (imgPath) => {
     });
 }
 
+export const uploadFile = async (filePath) => {
+    return await cloudinary.uploader.upload(filePath, {
+        folder: 'licenses'
+    });
+}
+
 export const uploadImageService = async (imgPath) => {
     return await cloudinary.uploader.upload(imgPath, {
         folder: 'services'
@@ -56,6 +62,12 @@ export const deleteImage = async (secureUrl) => {
     let fileName = String(secureUrl).split('/')
     fileName = fileName[fileName.length - 1].split('.')[0]
     return await cloudinary.uploader.destroy(`boatmate/${fileName}`)
+}
+
+export const deleteFile = async (secureUrl) => {
+    let fileName = String(secureUrl).split('/')
+    fileName = fileName[fileName.length - 1].split('.')[0]
+    return await cloudinary.uploader.destroy(`licenses/${fileName}`)
 }
 
 export const searchImage = async (secureUrl) => {
