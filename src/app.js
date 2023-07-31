@@ -26,6 +26,7 @@ import mediaRoutes from './routes/media.routes.js';
 import profileRoutes from './routes/profile.routes.js';
 import portofolioRoutes from './routes/portofolio.routes.js';
 import contractRoutes from './routes/contract.routes.js';
+import licenseRoutes from './routes/license.routes.js';
 
 const apiRouter = express.Router();
 
@@ -73,17 +74,7 @@ apiRouter.use(mediaRoutes);
 apiRouter.use(profileRoutes);
 apiRouter.use(portofolioRoutes);
 apiRouter.use(contractRoutes);
-
-//Sockets
-// const io = new Server(server, {
-//     cors: allowedOrigins
-// });
-
-// io.on('connection', (socket) => {
-//     console.log('a client connected');
-
-//     //socket events
-//   });
+apiRouter.use(licenseRoutes);
 
 
 

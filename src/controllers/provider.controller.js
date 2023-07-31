@@ -5,7 +5,7 @@ import { Provider } from "../models/Provider.js";
 import { ServiceProviders } from "../models/ServiceProviders.js";
 import { Service } from "../models/Service.js";
 import { Op } from "sequelize";
-import { deleteFile, deleteImage, uploadFile, uploadImage } from "../utils/cloudinary.js";
+import { deleteFile, deleteImage, uploadImage } from "../utils/cloudinary.js";
 import fs from 'fs'
 import path from "path";
 import { sequelize } from "../database/database.js";
@@ -366,47 +366,6 @@ export const updateProvider = async (req, res = response) => {
 
         res.status(200).json({
             msg: 'Provider successfully updated'
-        })
-    } catch (error) {
-        return res.status(400).json({msg: error.message});
-    }
-};
-
-export const uploadLicense = async (req, res = response) => {
-    const {idProvider} = req.params;
-
-    const {license} = req.files;
-
-    let dataUpdate = {};
-
-    try {
-        await sequelize.transaction(async (t) => {
-            const {provider_license} = await Provider.findOne({
-                where: {id_provider: idProvider},
-                transaction: t
-            });
-
-            if(license != null && license != undefined && provider_license != null && provider_license != '') {
-                const resDelete = await deleteFile(provider_license);
-                if(resDelete) {
-                    const result = await uploadFile(license.tempFilePath);
-                    dataUpdate.provider_license = result.secure_url;
-                    fs.unlinkSync(path.join(license.tempFilePath));
-                }
-            } else if(license != null && license != undefined) {
-                const result = await uploadFile(license.tempFilePath);
-                dataUpdate.provider_license = result.secure_url;
-                fs.unlinkSync(path.join(license.tempFilePath));
-            }
-
-            await Provider.update(dataUpdate, {
-                where: {id_provider: idProvider},
-                transaction: t
-            });
-
-            res.status(200).json({
-                msg: 'License successfully updated'
-            })
         })
     } catch (error) {
         return res.status(400).json({msg: error.message});

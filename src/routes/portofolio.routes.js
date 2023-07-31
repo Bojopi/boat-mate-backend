@@ -7,8 +7,7 @@ const router = Router();
 
 router.get('/portofolios/:idProvider', [
     validateJWTExpired,
-    validateJWT,
-    validateRol('ADMIN', 'SUPERADMIN', 'PROVIDER')
+    validateJWT
 ], getPortofolio);
 
 router.get('/portofolio/:idPortofolio', [

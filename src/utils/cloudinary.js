@@ -1,7 +1,4 @@
 import {v2 as cloudinary} from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import fs from 'fs'
-import path from "path";
 
 // Configuration 
 cloudinary.config({
@@ -10,22 +7,14 @@ cloudinary.config({
     api_secret: "0aQwjQNEHp8cOKbVw_upmWHQwWo"
   });
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'portofolio',
-        resource_type: 'image'
-    }
-});
-
 export const uploadImage = async (imgPath) => {
     return await cloudinary.uploader.upload(imgPath, {
         folder: 'boatmate'
     });
 }
 
-export const uploadFile = async (filePath) => {
-    return await cloudinary.uploader.upload(filePath, {
+export const uploadImageLicense = async (imgPath) => {
+    return await cloudinary.uploader.upload(imgPath, {
         folder: 'licenses'
     });
 }
@@ -71,6 +60,25 @@ export const deleteFile = async (secureUrl) => {
 }
 
 export const searchImage = async (secureUrl) => {
+    let fileName = String(secureUrl).split('/')
+    fileName = fileName[fileName.length - 1].split('.')[0]
+    try {
+        const result = await cloudinary.search
+        .expression(`${fileName}`)
+        .execute();
+
+        if(result.total_count === 0) {
+            return false;
+        } else {
+            return true;
+        }
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
+
+export const searchFile = async (secureUrl) => {
     let fileName = String(secureUrl).split('/')
     fileName = fileName[fileName.length - 1].split('.')[0]
     try {
