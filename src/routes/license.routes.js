@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import { validateJWT, validateJWTExpired } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
-import { uploadLicense } from '../controllers/license.controller.js';
+import { getLicenses, uploadLicense } from '../controllers/license.controller.js';
 
 
 const router = Router();
 
-// router.get('/portofolios/:idProvider', [
-//     validateJWTExpired,
-//     validateJWT
-// ], getPortofolio);
+router.get('/provider-license/:idProvider', [
+    validateJWTExpired,
+    validateJWT
+], getLicenses);
 
 // router.get('/portofolio/:idPortofolio', [
 //     validateJWTExpired,

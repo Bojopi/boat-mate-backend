@@ -5,7 +5,7 @@ import { Provider } from "../models/Provider.js";
 import { ServiceProviders } from "../models/ServiceProviders.js";
 import { Service } from "../models/Service.js";
 import { Op } from "sequelize";
-import { deleteFile, deleteImage, uploadImage } from "../utils/cloudinary.js";
+import { deleteImage, uploadImage } from "../utils/cloudinary.js";
 import fs from 'fs'
 import path from "path";
 import { sequelize } from "../database/database.js";

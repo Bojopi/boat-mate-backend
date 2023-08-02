@@ -53,9 +53,7 @@ export const deleteImage = async (secureUrl) => {
     return await cloudinary.uploader.destroy(`boatmate/${fileName}`)
 }
 
-export const deleteFile = async (secureUrl) => {
-    let fileName = String(secureUrl).split('/')
-    fileName = fileName[fileName.length - 1].split('.')[0]
+export const deleteLicense = async (fileName) => {
     return await cloudinary.uploader.destroy(`licenses/${fileName}`)
 }
 
