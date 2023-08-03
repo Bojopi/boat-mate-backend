@@ -33,6 +33,8 @@ io.use((socket, next) => {
 
 
 io.on('connection', (socket) => {
+    socket.emit('test', {test: 'hello'})
+    
     eventEmitter.on('contract-create', (data) => {
         const user = usersService.getCustomerById(data.id_customer)
         
@@ -44,6 +46,6 @@ io.on('connection', (socket) => {
     })
 
     socket.on("disconnect", () => {
-        socketService.deleteUser(socket.id)
+        usersService.deleteUser(socket.id)
     })
 })
