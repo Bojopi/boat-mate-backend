@@ -155,6 +155,39 @@ export const getServiceProvider = async (req, res = response) => {
     }
 }
 
+export const getOneServiceProvider = async (req, res = response) => {
+    const {idServiceProvider} = req.params;
+
+    try {
+        const service = await ServiceProviders.findOne({
+            attributes: [
+                'id_service_provider',
+                'service_provider_state',
+                'service_provider_description',
+                'provider.id_provider',
+                'provider.provider_name',
+                'provider.provider_image',
+                'provider.provider_description',
+                'provider.provider_lat',
+                'provider.provider_lng',
+                'provider.provider_zip',
+            ],
+            where: {
+                id_service_provider: idServiceProvider,
+            },
+            include: [{
+                model: Provider,
+                attributes: []
+            }],
+            raw: true
+        });
+
+        res.status(200).json({service});
+    } catch (error) {
+        return res.status(400).json({msg: error.message})
+    }
+}
+
 export const addService = async (req, res = response) => {
     const {idProvider} = req.params;
     const {idService, description} = req.body;

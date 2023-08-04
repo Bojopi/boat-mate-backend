@@ -18,7 +18,7 @@ export const getContracts = async (req, res = response) => {
                 'contract_date',
                 'contract_state',
                 'contract_description',
-                'price',
+                'contract_price',
                 'service_provider.id_service_provider',
                 'service_provider.service_provider_state',
                 'service_provider.provider.id_provider',
@@ -72,7 +72,7 @@ export const getOneContract = async (req, res = response) => {
                 'contract_date',
                 'contract_state',
                 'contract_description',
-                'price',
+                'contract_price',
                 'service_provider.id_service_provider',
                 'service_provider.service_provider_state',
                 'service_provider.provider.id_provider',
@@ -128,17 +128,17 @@ export const createContract = async (req, res = response) => {
     } = req.body;
 
     try {
+        console.log(customer.id_customer)
         const contract = await Contract.create({
             customerIdCustomer: customer.id_customer,
             serviceProviderIdServiceProvider: idServiceProvider,
             contract_date: date,
             contract_state: 'PENDING',
             contract_description: contractDescription,
-            price
+            contract_price: price
         }, {
             returning: true
         });
-
         // const contract = {
         //     serviceProviderIdServiceProvider: idServiceProvider,
         //     contract_description: contractDescription,
@@ -164,7 +164,7 @@ export const updateContract = async (req, res = response) => {
 
     try {
         let dataUpdate = {};
-        if(price != null && price != '' && price != 0) dataUpdate.price = price;
+        if(price != null && price != '' && price != 0) dataUpdate.contract_price = price;
         if(contract_description != null && contract_description != '') dataUpdate.contract_description = contract_description;
         if(contract_state != null && contract_state != '') dataUpdate.contract_state = contract_state;
 
@@ -191,7 +191,7 @@ export const getContracsProvider = async (req, res = response) => {
                 'contract_date',
                 'contract_state',
                 'contract_description',
-                'price',
+                'contract_price',
                 'service_provider.service_provider_state',
                 'customer.profile.email',
                 'customer.profile.person.person_name',
@@ -253,7 +253,7 @@ export const getContracsCustomer = async (req, res = response) => {
                 'contract_date',
                 'contract_state',
                 'contract_description',
-                'price',
+                'contract_price',
                 'service_provider.service_provider_state',
                 'service_provider.service.service_name',
                 'service_provider.provider.id_provider',

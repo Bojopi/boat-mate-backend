@@ -17,7 +17,7 @@ export const Contract = sequelize.define('contracts', {
     contract_description: {
         type: DataTypes.STRING
     },
-    price: {
+    contract_price: {
         type: DataTypes.FLOAT,
     }
 }, {

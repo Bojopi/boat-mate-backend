@@ -2,6 +2,7 @@ import app from './app.js';
 import env from 'dotenv';
 import http from 'http';
 import {Server} from 'socket.io'
+import { sequelize } from './database/database.js';
 
 const server = http.createServer(app);
 
