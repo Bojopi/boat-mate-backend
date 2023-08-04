@@ -1,4 +1,7 @@
 import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+
+dotenv.config({path: '.env'})
 
 export const generateJWT = ( profile ) => {
 

@@ -7,6 +7,8 @@ import { Customer } from "../models/Customer.js";
 import { Profile } from "../models/Profile.js";
 import { Person } from "../models/Person.js";
 
+import { eventEmitter } from "../helpers/event-emitter.js";
+
 export const getContracts = async (req, res = response) => {
     try {
 
@@ -116,23 +118,39 @@ export const getOneContract = async (req, res = response) => {
 };
 
 export const createContract = async (req, res = response) => {
-    const {idCustomer} = req.params;
+    const {customer} = req;
+
     const {
         idServiceProvider,
         date,
         contractDescription,
+        price
     } = req.body;
 
     try {
         const contract = await Contract.create({
-            customerIdCustomer: idCustomer,
+            customerIdCustomer: customer.id_customer,
             serviceProviderIdServiceProvider: idServiceProvider,
             contract_date: date,
             contract_state: 'PENDING',
-            contract_description: contractDescription
+            contract_description: contractDescription,
+            price
         }, {
             returning: true
         });
+
+        // const contract = {
+        //     serviceProviderIdServiceProvider: idServiceProvider,
+        //     contract_description: contractDescription,
+        //     contract_date: date,
+        //     contract_state: 'PENDING',
+        //     price
+        // }
+        
+        eventEmitter.emit('contract-create', {
+            id_customer: customer.id_customer,
+            contract
+        })
 
         res.status(200).json({contract});
     } catch (error) {

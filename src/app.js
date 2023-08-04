@@ -1,14 +1,13 @@
-
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
-// import http from 'http';
-// import { Server } from 'socket.io';
+import dotenv from 'dotenv';
+
+dotenv.config({path: '.env'})
 
 const app = express();
-// const server = http.createServer(app);
 
 //settings
 app.set('port', process.env.PORT || 8080)
@@ -37,10 +36,11 @@ const allowedOrigins = ['http://localhost:3000',
                         'http://boatmate.com:3000'
                     ];
 
-app.use(cors({
-    origin: allowedOrigins,
-    credentials: true
-}));
+// app.use(cors({
+//     origin: allowedOrigins,
+//     credentials: true
+// }));
+app.use(cors())
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser())
@@ -75,7 +75,6 @@ apiRouter.use(profileRoutes);
 apiRouter.use(portofolioRoutes);
 apiRouter.use(contractRoutes);
 apiRouter.use(licenseRoutes);
-
 
 
 export default app;

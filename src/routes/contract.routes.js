@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { validateJWT, validateJWTExpired } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
 import { createContract, getContracsCustomer, getContracsProvider, getContracts, getOneContract, updateContract, updateState } from '../controllers/contract.controller.js';
+import { validateIdCustomer } from '../middlewares/validate-id-customer.js';
 
 const router = Router();
 
@@ -29,7 +30,8 @@ router.get('/contract-customer/:idCustomer', [
 router.post('/contract/:idCustomer', [
     validateJWTExpired,
     validateJWT,
-    validateRol('ADMIN', 'SUPERADMIN', 'CUSTOMER')
+    validateRol('ADMIN', 'SUPERADMIN', 'CUSTOMER'),
+    validateIdCustomer
 ], createContract);
 
 router.post('/update-contract/:idContract', [

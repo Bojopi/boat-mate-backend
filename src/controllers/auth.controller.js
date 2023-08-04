@@ -171,6 +171,8 @@ export const login = async (req, res = response) => {
             // domain: 'boatmate.com'
         })
 
+        console.log(serialized)
+
         res.setHeader('Set-Cookie', serialized)
 
         return res.json({

@@ -1,11 +1,18 @@
 import app from './app.js';
-
 import env from 'dotenv';
+import http from 'http';
+import {Server} from 'socket.io'
+
+const server = http.createServer(app);
+
+export const io = new Server(server, {
+    cors: {
+        origin: '*',
+        methods: ['GET', 'POST']
+    }
+});
+ 
 env.config();
-
-// const port = process.env.PORT || 8080;
-
-import { sequelize } from './database/database.js';
 
 // Models
 import './models/Boat.js';
@@ -23,13 +30,13 @@ import './models/Schedule.js';
 import './models/ServiceCategories.js';
 import './models/ServicePreferences.js';
 import './models/ServiceProviders.js';
-
+import('./socket/socket.js')
 
 const connect = async () => {
     try {
         // await sequelize.sync({alter: true})
-        app.listen(app.get('port'))
-        console.log('listening on port 8080');
+        server.listen(app.get('port'))
+        console.log(`listening on port ${app.get('port')}`);
     } catch (error) {
         console.log('Unable to connect', error);
     }
