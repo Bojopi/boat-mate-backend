@@ -26,6 +26,7 @@ import profileRoutes from './routes/profile.routes.js';
 import portofolioRoutes from './routes/portofolio.routes.js';
 import contractRoutes from './routes/contract.routes.js';
 import licenseRoutes from './routes/license.routes.js';
+// import stripeRoutes from './routes/stripe.routes.js';
 
 const apiRouter = express.Router();
 
@@ -36,11 +37,11 @@ const allowedOrigins = ['http://localhost:3000',
                         'http://boatmate.com:3000'
                     ];
 
-// app.use(cors({
-//     origin: allowedOrigins,
-//     credentials: true
-// }));
-app.use(cors())
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true
+}));
+// app.use(cors())
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser())
@@ -75,6 +76,7 @@ apiRouter.use(profileRoutes);
 apiRouter.use(portofolioRoutes);
 apiRouter.use(contractRoutes);
 apiRouter.use(licenseRoutes);
+// apiRouter.use(stripeRoutes);
 
 
 export default app;

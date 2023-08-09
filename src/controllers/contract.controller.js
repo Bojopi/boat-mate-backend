@@ -128,7 +128,7 @@ export const createContract = async (req, res = response) => {
     } = req.body;
 
     try {
-        console.log(customer.id_customer)
+        console.log(customer)
         const contract = await Contract.create({
             customerIdCustomer: customer.id_customer,
             serviceProviderIdServiceProvider: idServiceProvider,
@@ -152,7 +152,10 @@ export const createContract = async (req, res = response) => {
             contract
         })
 
-        res.status(200).json({contract});
+        res.status(200).json({
+            msg: 'Contract created',
+            contract
+        });
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
