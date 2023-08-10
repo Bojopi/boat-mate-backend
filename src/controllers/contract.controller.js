@@ -123,19 +123,17 @@ export const createContract = async (req, res = response) => {
     const {
         idServiceProvider,
         date,
-        contractDescription,
-        // price
+        contractDescription
     } = req.body;
 
     try {
-        console.log(customer)
+        console.log(customer.id_customer)
         const contract = await Contract.create({
             customerIdCustomer: customer.id_customer,
             serviceProviderIdServiceProvider: idServiceProvider,
             contract_date: date,
             contract_state: 'PENDING',
             contract_description: contractDescription,
-            // contract_price: price
         }, {
             returning: true
         });

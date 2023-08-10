@@ -19,6 +19,7 @@ export const Contract = sequelize.define('contracts', {
     },
     contract_price: {
         type: DataTypes.FLOAT,
+        defaultValue: 0
     }
 }, {
     timestamps: false

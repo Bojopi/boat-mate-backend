@@ -163,15 +163,13 @@ export const login = async (req, res = response) => {
         //generate the jwt
         const token = await generateJWT(profile);
         const serialized = serialize('tokenUser', token, {
-            httpOnly: true,
+            httpOnly: false,
             secure: false,
             sameSite: 'lax',
             maxAge: 1000 * 60 * 60 * 23,
             path: '/',
             // domain: 'boatmate.com'
         })
-
-        console.log(serialized)
 
         res.setHeader('Set-Cookie', serialized)
 
@@ -193,7 +191,7 @@ export const getUser = (req, res = response) => {
 
     try {
         const user = verify(tokenUser, process.env.JWT_SECRET)
-        return res.status(200).json(user)
+        return res.status(200).json({user, tokenUser})
     } catch (error) {
         return res.status(401).json({ msg: 'Invalid token' })
     }
@@ -373,7 +371,7 @@ export const googleSignIn = async (req, res = response) => {
         //generate the jwt
         const token = await generateJWT(user);
         const serialized = serialize('tokenUser', token, {
-            httpOnly: true,
+            httpOnly: false,
             secure: false,
             sameSite: 'lax',
             maxAge: 1000 * 60 * 60 * 23,
@@ -405,7 +403,7 @@ export const logout = (req, res = response) => {
         verify(tokenUser, process.env.JWT_SECRET);
 
         const serialized = serialize('tokenUser', null, {
-            httpOnly: true,
+            httpOnly: false,
             secure: false,
             sameSite: 'lax',
             maxAge: 0,
@@ -595,7 +593,7 @@ export const createProfile = async (req, res = response) => {
         const token = await generateJWT(user);
 
         const serialized = serialize('tokenUser', token, {
-            httpOnly: true,
+            httpOnly: false,
             secure: false,
             sameSite: 'lax',
             maxAge: 1000 * 60 * 4,
