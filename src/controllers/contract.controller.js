@@ -124,7 +124,7 @@ export const createContract = async (req, res = response) => {
         idServiceProvider,
         date,
         contractDescription,
-        price
+        // price
     } = req.body;
 
     try {
@@ -135,7 +135,7 @@ export const createContract = async (req, res = response) => {
             contract_date: date,
             contract_state: 'PENDING',
             contract_description: contractDescription,
-            contract_price: price
+            // contract_price: price
         }, {
             returning: true
         });

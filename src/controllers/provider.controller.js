@@ -171,13 +171,23 @@ export const getOneServiceProvider = async (req, res = response) => {
                 'provider.provider_lat',
                 'provider.provider_lng',
                 'provider.provider_zip',
+                'provider.profile.email',
+                'provider.profile.person.phone',
             ],
             where: {
                 id_service_provider: idServiceProvider,
             },
             include: [{
                 model: Provider,
-                attributes: []
+                attributes: [],
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    }]
+                }]
             }],
             raw: true
         });
