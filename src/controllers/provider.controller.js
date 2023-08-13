@@ -414,4 +414,3 @@ export const updateProvider = async (req, res = response) => {
         return res.status(400).json({msg: error.message});
     }
 };
-

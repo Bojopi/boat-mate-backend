@@ -47,6 +47,27 @@ export const uploadImages = async (idProvider, files, description) => {
     if(urls.length === files.length) return urls
 }
 
+export const uploadGallery = async (idContract, files) => {
+    const urls = [];
+    for(const file of files) {
+        await cloudinary.uploader.upload(file.tempFilePath, {
+            folder: `gallery/contract/${idContract}`
+        }, (err, res) => {
+            if(err) {
+                console.log(err);
+                return err
+            }
+
+            urls.push({
+                gallery_image: res.secure_url,
+                contractId: idContract
+            });
+        })
+    }
+
+    if(urls.length === files.length) return urls
+}
+
 export const deleteImage = async (secureUrl) => {
     let fileName = String(secureUrl).split('/')
     fileName = fileName[fileName.length - 1].split('.')[0]

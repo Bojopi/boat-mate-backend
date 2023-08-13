@@ -8,6 +8,7 @@ import { Profile } from "../models/Profile.js";
 import { Person } from "../models/Person.js";
 
 import { eventEmitter } from "../helpers/event-emitter.js";
+import { sequelize } from "../database/database.js";
 
 export const getContracts = async (req, res = response) => {
     try {
@@ -16,6 +17,7 @@ export const getContracts = async (req, res = response) => {
             attributes: [
                 'id_contract',
                 'contract_date',
+                'contract_date_finished',
                 'contract_state',
                 'contract_description',
                 'contract_price',
@@ -70,6 +72,7 @@ export const getOneContract = async (req, res = response) => {
             attributes: [
                 'id_contract',
                 'contract_date',
+                'contract_date_finished',
                 'contract_state',
                 'contract_description',
                 'contract_price',
@@ -190,19 +193,26 @@ export const getContracsProvider = async (req, res = response) => {
             attributes: [
                 'id_contract',
                 'contract_date',
+                'contract_date_finished',
                 'contract_state',
                 'contract_description',
                 'contract_price',
                 'service_provider.service_provider_state',
+                'service_provider.service.service_name',
                 'customer.profile.email',
                 'customer.profile.person.person_name',
                 'customer.profile.person.lastname',
-                'customer.profile.person.phone'
+                'customer.profile.person.phone',
+                'customer.profile.person.person_image',
             ],
             include: [{
                 model: ServiceProviders,
                 attributes: [],
-                where: {providerIdProvider: idProvider}
+                where: {providerIdProvider: idProvider},
+                include: [{
+                    model: Service,
+                    attributes: []
+                }]
             }, {
                 model: Customer,
                 attributes: [],
@@ -252,6 +262,7 @@ export const getContracsCustomer = async (req, res = response) => {
             attributes: [
                 'id_contract',
                 'contract_date',
+                'contract_date_finished',
                 'contract_state',
                 'contract_description',
                 'contract_price',
@@ -321,12 +332,23 @@ export const getContracsCustomer = async (req, res = response) => {
 
 export const updateState = async (req, res = response) => {
     const {idContract} = req.params;
-    const {contractState} = req.body;
+    const {contractState, price, date} = req.body;
+
+    let data = {};
+
+    data = {...data, contract_state: contractState}
+
+    if(price != 0 || price != null) {
+        data = {...data, contract_price: price}
+    }
+
+    if(date != null) {
+        data = {...data, contract_date_finished: date}
+    }
 
     try {
-        const contract = await Contract.update({
-            contract_state: contractState
-        }, {
+        const contract = await Contract.update(
+            data, {
             where: {id_contract: idContract},
             returning: true
         });
@@ -335,6 +357,62 @@ export const updateState = async (req, res = response) => {
             msg: 'Contract updated',
             contract
         });
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+};
+
+export const getHiredServices = async (req, res = response) => {
+
+    // const page = Number(req.query.page)
+    // const perPage = Number(req.query.perPage)
+
+    try {
+        const hireds = await Contract.findAll({
+            attributes: [
+                'id_contract',
+                [sequelize.fn('COUNT', sequelize.col('id_contract')), 'contract_count'],
+                'service_provider.service.id_service',
+                'service_provider.service.service_name',
+                'service_provider.service.service_description',
+                'service_provider.service.service_image',
+                // 'service_provider.provider.provider_lat',
+                // 'service_provider.provider.provider_lng',
+                // 'service_provider.provider.provider_zip',
+            ],
+            include: [{
+                model: ServiceProviders,
+                attributes: [],
+                include: [{
+                    model: Service,
+                    where: {service_state: true},
+                    attributes: []
+                }, {
+                    model: Provider,
+                    attributes: []
+                }]
+            }],
+            group: [
+                'service_provider.service.id_service', 
+                'contracts.id_contract',
+                'service_provider.service.service_name',
+                'service_provider.service.service_description',
+                'service_provider.service.service_image',
+                // 'service_provider.provider.provider_lat',
+                // 'service_provider.provider.provider_lng',
+                // 'service_provider.provider.provider_zip',
+            ],
+            order: [sequelize.col('service_provider.service.id_service')],
+            // limit: perPage,
+            // offset: (page - 1) * perPage,
+            raw: true,
+        });
+
+        // const totalItems = hireds.count;
+        // const totalPages = Math.ceil(totalItems / perPage);
+
+        res.status(200).json({hireds});
+        // res.status(200).json({hireds: hireds.rows, totalItems, totalPages});
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }

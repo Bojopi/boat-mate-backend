@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
+import { Gallery } from "./Gallery.js";
 
 export const Contract = sequelize.define('contracts', {
     id_contract: {
@@ -20,8 +21,20 @@ export const Contract = sequelize.define('contracts', {
     contract_price: {
         type: DataTypes.FLOAT,
         defaultValue: 0
-    }
+    },
+    contract_date_finished: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
 }, {
     timestamps: false
 })
 
+Contract.hasMany(Gallery, {
+    foreignKey: 'contractId',
+    sourceKey: 'id_contract'
+});
+Gallery.belongsTo(Contract, {
+    foreignKey: 'contractId',
+    targetKey: 'id_contract'
+});

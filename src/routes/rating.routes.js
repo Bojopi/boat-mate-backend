@@ -5,11 +5,7 @@ import { changeVisible, getAllRatings, getCustomersPost, getOneRating, getRating
 
 const router = Router();
 
-router.get('/ratings', [
-    validateJWTExpired,
-    validateJWT,
-    validateRol('ADMIN', 'SUPERADMIN')
-], getAllRatings);
+router.get('/ratings', getAllRatings);
 
 router.get('/rating/:idRating', [
     validateJWTExpired,
