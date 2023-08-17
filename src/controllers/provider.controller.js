@@ -47,7 +47,7 @@ export const getAllProviders = async (req, res = response) => {
                     attributes: []
                 }
             },
-            order: [[Profile, 'profile_state', 'DESC']],
+            order: [[Profile, 'profile_state', 'DESC'], [sequelize.col('profile.person.person_name'), 'ASC']],
             raw: true
         });
         res.status(200).json({ providers });

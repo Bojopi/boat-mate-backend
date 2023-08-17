@@ -636,7 +636,16 @@ export const getUser = async (req, res = response) => {
     try {
         const user = await sequelize.transaction(async(t) => {
             let res = await Profile.findOne({
-                attributes: ['email', 'password', 'roleId', 'person.person_name', 'person.lastname', 'person.phone'],
+                attributes: [
+                    'email', 
+                    'password', 
+                    'role.id_role', 
+                    'role.role_description', 
+                    'role.role_state', 
+                    'person.person_name', 
+                    'person.lastname', 
+                    'person.phone',
+                    'person.person_image'],
                 where: {id_profile: idProfile},
                 include: [{
                     model: Person,
@@ -649,7 +658,7 @@ export const getUser = async (req, res = response) => {
                 transaction: t
             });
 
-            if(res.roleId == 3) {
+            if(res.id_role == 3) {
                 res = await Provider.findOne({
                     attributes: [
                         'provider_name', 
@@ -661,7 +670,9 @@ export const getUser = async (req, res = response) => {
                         'profile.id_profile',
                         'profile.email',
                         'profile.profile_state',
-                        'profile.roleId',
+                        'profile.role.id_role',
+                        'profile.role.role_description',
+                        'profile.role.role_state',
                         'profile.person.person_name',
                         'profile.person.lastname',
                         'profile.person.phone',
@@ -684,7 +695,7 @@ export const getUser = async (req, res = response) => {
                 })
             };
 
-            if(res.roleId == 4) {
+            if(res.id_role == 4) {
                 res = await Customer.findOne({
                     attributes: [
                         'customer_lat',
@@ -693,7 +704,9 @@ export const getUser = async (req, res = response) => {
                         'profile.id_profile',
                         'profile.email',
                         'profile.profile_state',
-                        'profile.roleId',
+                        'profile.role.id_role',
+                        'profile.role.role_description',
+                        'profile.role.role_state',
                         'profile.person.person_name',
                         'profile.person.lastname',
                         'profile.person.phone',
