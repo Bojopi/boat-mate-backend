@@ -128,7 +128,6 @@ export const createContract = async (req, res = response) => {
         date,
         contractDescription
     } = req.body;
-    console.log(idServiceProvider, date, contractDescription, parseInt(idCustomer))
     try {
         const contract = await Contract.create({
             customerId: parseInt(idCustomer),
@@ -136,19 +135,9 @@ export const createContract = async (req, res = response) => {
             contract_date: date,
             contract_state: 'PENDING',
             contract_description: contractDescription,
-            // contract_price: 0,
-            // contract_date_finished: date
         }, {
             returning: true
         });
-        console.log(contract)
-        // const contract = {
-        //     serviceProviderIdServiceProvider: idServiceProvider,
-        //     contract_description: contractDescription,
-        //     contract_date: date,
-        //     contract_state: 'PENDING',
-        //     price
-        // }
         
         eventEmitter.emit('contract-create', {
             idCustomer: idCustomer,
