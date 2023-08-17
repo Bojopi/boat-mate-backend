@@ -43,7 +43,17 @@ Customer.hasMany(Rating, {
 Rating.belongsTo(Customer, {
     foreignKey: 'customerId',
     targetKey: 'id_customer'
-})
+});
+
+
+Customer.hasMany(Contract, {
+    foreignKey: 'customerId',
+    sourceKey: 'id_customer'
+});
+Contract.belongsTo(Customer, {
+    foreignKey: 'customerId',
+    targetKey: 'id_customer'
+});
 
 
 Customer.belongsToMany(Service, {
@@ -58,15 +68,9 @@ Service.belongsToMany(Customer, {
 });
 
 
-Customer.belongsToMany(ServiceProviders, {
-    through: Contract,
-});
-ServiceProviders.belongsToMany(Customer, {
-    through: Contract,
-});
-
-ServiceProviders.hasMany(Contract);
-Contract.belongsTo(ServiceProviders);
-
-Customer.hasMany(Contract);
-Contract.belongsTo(Customer);
+// Customer.belongsToMany(ServiceProviders, {
+//     through: Contract,
+// });
+// ServiceProviders.belongsToMany(Customer, {
+//     through: Contract,
+// });

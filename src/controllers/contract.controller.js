@@ -121,25 +121,27 @@ export const getOneContract = async (req, res = response) => {
 };
 
 export const createContract = async (req, res = response) => {
-    const {customer} = req;
+    const {idCustomer} = req.params;
 
     const {
         idServiceProvider,
         date,
         contractDescription
     } = req.body;
-
+    console.log(idServiceProvider, date, contractDescription, parseInt(idCustomer))
     try {
-        console.log(customer.id_customer)
         const contract = await Contract.create({
-            customerIdCustomer: customer.id_customer,
-            serviceProviderIdServiceProvider: idServiceProvider,
+            customerId: parseInt(idCustomer),
+            serviceProviderId: idServiceProvider,
             contract_date: date,
             contract_state: 'PENDING',
             contract_description: contractDescription,
+            // contract_price: 0,
+            // contract_date_finished: date
         }, {
             returning: true
         });
+        console.log(contract)
         // const contract = {
         //     serviceProviderIdServiceProvider: idServiceProvider,
         //     contract_description: contractDescription,
@@ -149,7 +151,7 @@ export const createContract = async (req, res = response) => {
         // }
         
         eventEmitter.emit('contract-create', {
-            id_customer: customer.id_customer,
+            idCustomer: idCustomer,
             contract
         })
 
@@ -279,7 +281,7 @@ export const getContracsCustomer = async (req, res = response) => {
                 'service_provider.provider.profile.person.lastname',
                 'service_provider.provider.profile.person.phone'
             ],
-            where: {customerIdCustomer: idCustomer},
+            where: {customerId: idCustomer},
             include: [{
                 model: ServiceProviders,
                 attributes: [],
@@ -304,7 +306,7 @@ export const getContracsCustomer = async (req, res = response) => {
         });
 
         const count = await Contract.count({
-            where: {customerIdCustomer: idCustomer},
+            where: {customerId: idCustomer},
             include: [{
                 model: ServiceProviders,
                 attributes: [],

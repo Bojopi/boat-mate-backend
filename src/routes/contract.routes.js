@@ -33,7 +33,7 @@ router.post('/contract/:idCustomer', [
     validateJWTExpired,
     validateJWT,
     validateRol('ADMIN', 'SUPERADMIN', 'CUSTOMER'),
-    validateIdCustomer
+    // validateIdCustomer
 ], createContract);
 
 router.post('/update-contract/:idContract', [

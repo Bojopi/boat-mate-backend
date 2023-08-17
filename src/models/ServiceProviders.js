@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
 import { Rating } from "./Rating.js";
+import { Contract } from "./Contract.js";
 
 export const ServiceProviders = sequelize.define('service_providers', {
     id_service_provider: {
@@ -24,6 +25,16 @@ ServiceProviders.hasMany(Rating, {
     sourceKey: 'id_service_provider'
 });
 Rating.belongsTo(ServiceProviders, {
+    foreignKey: 'serviceProviderId',
+    targetKey: 'id_service_provider'
+});
+
+
+ServiceProviders.hasMany(Contract, {
+    foreignKey: 'serviceProviderId',
+    sourceKey: 'id_service_provider'
+});
+Contract.belongsTo(ServiceProviders, {
     foreignKey: 'serviceProviderId',
     targetKey: 'id_service_provider'
 });
