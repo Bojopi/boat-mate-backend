@@ -338,6 +338,7 @@ export const updateState = async (req, res = response) => {
     }
 
     try {
+        console.log(data)
         const contract = await Contract.update(
             data, {
             where: {id_contract: idContract},

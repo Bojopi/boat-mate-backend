@@ -6,6 +6,7 @@ import { ServicePreferences } from "./ServicePreferences.js";
 import { Rating } from "./Rating.js";
 import { ServiceProviders } from "./ServiceProviders.js";
 import { Contract } from "./Contract.js";
+import { Message } from "./Message.js";
 
 export const Customer = sequelize.define('customers', {
     id_customer: {
@@ -68,9 +69,11 @@ Service.belongsToMany(Customer, {
 });
 
 
-// Customer.belongsToMany(ServiceProviders, {
-//     through: Contract,
-// });
-// ServiceProviders.belongsToMany(Customer, {
-//     through: Contract,
-// });
+Customer.hasMany(Message, {
+    foreignKey: 'customerId',
+    sourceKey: 'id_customer'
+});
+Message.belongsTo(Customer, {
+    foreignKey: 'customerId',
+    targetKey: 'id_customer'
+});

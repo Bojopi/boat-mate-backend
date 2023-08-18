@@ -27,6 +27,7 @@ import portofolioRoutes from './routes/portofolio.routes.js';
 import contractRoutes from './routes/contract.routes.js';
 import licenseRoutes from './routes/license.routes.js';
 import galleryRoutes from './routes/gallery.routes.js';
+import conversationRoutes from './routes/conversation.routes.js';
 // import stripeRoutes from './routes/stripe.routes.js';
 
 const apiRouter = express.Router();
@@ -78,6 +79,7 @@ apiRouter.use(portofolioRoutes);
 apiRouter.use(contractRoutes);
 apiRouter.use(licenseRoutes);
 apiRouter.use(galleryRoutes);
+apiRouter.use(conversationRoutes);
 // apiRouter.use(stripeRoutes);
 
 

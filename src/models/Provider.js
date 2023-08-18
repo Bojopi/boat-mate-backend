@@ -5,6 +5,7 @@ import { Schedule } from './Schedule.js'
 import { Portofolio } from "./Portofolio.js";
 import { ServiceProviders } from "./ServiceProviders.js";
 import { License } from "./Licenses.js";
+import { Message } from "./Message.js";
 
 export const Provider = sequelize.define('providers', {
     id_provider: {
@@ -83,4 +84,14 @@ ServiceProviders.belongsTo(Service, {
 Provider.hasMany(ServiceProviders, {
 });
 ServiceProviders.belongsTo(Provider, {
+});
+
+
+Provider.hasMany(Message, {
+    foreignKey: 'providerId',
+    sourceKey: 'id_provider'
+});
+Message.belongsTo(Provider, {
+    foreignKey: 'providerId',
+    targetKey: 'id_provider'
 });

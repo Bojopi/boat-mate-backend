@@ -31,6 +31,8 @@ import './models/Schedule.js';
 import './models/ServiceCategories.js';
 import './models/ServicePreferences.js';
 import './models/ServiceProviders.js';
+import './models/Conversation.js';
+import './models/Message.js';
 import('./socket/socket.js')
 
 const connect = async () => {
