@@ -10,6 +10,8 @@ import fs from 'fs'
 import path from "path";
 import { sequelize } from "../database/database.js";
 import { verify } from "jsonwebtoken";
+import { ServiceCategories } from "../models/ServiceCategories.js";
+import { Category } from "../models/Category.js";
 
 export const getAllProviders = async (req, res = response) => {
     const {tokenUser} = req.cookies;
@@ -103,6 +105,9 @@ export const getServicesProvider = async (req, res = response) => {
                 'service_provider_description',
                 'service.id_service',
                 'service.service_name',
+                'service.service_description',
+                'service.service_state',
+                'service.service_image',
             ],
             where: {
                 [Op.and]: [
@@ -112,10 +117,17 @@ export const getServicesProvider = async (req, res = response) => {
             },
             include: [{
                 model: Service,
-                attributes: []
+                // attributes: [],
+                include: [{
+                    model: ServiceCategories,
+                    attributes: ['categoryIdCategory'],
+                    include: [{
+                        model: Category,
+                    }]
+                }]
             }],
             order: [[Service, 'service_name', 'ASC']],
-            raw: true
+            // raw: true
         });
 
         res.status(200).json({services});
@@ -259,6 +271,35 @@ export const addService = async (req, res = response) => {
         });
 
         res.status(200).json({service});
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+};
+
+export const addServices = async (req, res = response) => {
+    const {idProvider} = req.params;
+    const { services } = req.body;
+
+    try {
+        const provider = await Provider.findOne({
+            where: {id_provider: idProvider}
+        })
+
+        if(services.length > 0) {
+            const servicesId = services.map((service) => service.id_service);
+
+            const existingServices = await Service.findAll({
+                where: { id_service: { [Op.in]: servicesId } }
+            });
+
+            await provider.setServices(existingServices);
+        } else {
+            await provider.setServices([]);
+        }
+
+        res.status(200).json({
+            msg: 'Services updated',
+        });
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }

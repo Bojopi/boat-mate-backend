@@ -212,6 +212,7 @@ export const googleSignIn = async (req, res = response) => {
                         'password',
                         'profile_state',
                         'google',
+                        'check_steps',
                         'person.id_person',
                         'person.person_name',
                         'person.lastname',
@@ -231,6 +232,7 @@ export const googleSignIn = async (req, res = response) => {
                 }],
             raw: true
         })
+        console.log(user)
 
         //nonexistent user
         if(!user) {
@@ -249,7 +251,7 @@ export const googleSignIn = async (req, res = response) => {
                 email: email,
                 password: pass,
                 profile_state: true,
-                roleId: 4,
+                roleId: 5,
                 personId: person.dataValues.id_person,
                 google: true
             })
@@ -261,6 +263,7 @@ export const googleSignIn = async (req, res = response) => {
                             'password',
                             'profile_state',
                             'google',
+                            'check_steps',
                             'person.id_person',
                             'person.person_name',
                             'person.lastname',
@@ -302,6 +305,7 @@ export const googleSignIn = async (req, res = response) => {
                         'profile.profile_state',
                         'profile.email',
                         'profile.google',
+                        'profile.check_steps',
                         'profile.person.id_person',
                         'profile.person.person_name',
                         'profile.person.lastname',
@@ -340,6 +344,7 @@ export const googleSignIn = async (req, res = response) => {
                         'profile.profile_state',
                         'profile.email',
                         'profile.google',
+                        'profile.check_steps',
                         'profile.person.id_person',
                         'profile.person.person_name',
                         'profile.person.lastname',
@@ -383,6 +388,7 @@ export const googleSignIn = async (req, res = response) => {
 
         res.status(200).json({
             msg: 'Login successfully',
+            user,
             newUser
         })
     } catch (error) {

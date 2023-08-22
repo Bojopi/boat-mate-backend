@@ -164,7 +164,7 @@ export const setRoleUser = async (req, res = response) => {
 
         res.setHeader('Set-Cookie', serialized);
 
-        res.status(200).json({ msg: 'Role updated successfully'});
+        res.status(200).json({ msg: 'Role updated successfully', user: resUser});
     } catch (error) {
         return res.status(400).json({msg: error.message});
     }
@@ -215,6 +215,8 @@ export const setDataProfile = async (req, res = response) => {
         providerDescription
     } = req.body;
 
+    console.log(req.body)
+
     let providerImage, personImage, providerId, customerId, resUser;
     if(req.files != null) {
         const {providerImage: provImg, personImage: perImg} = req.files;
@@ -240,7 +242,7 @@ export const setDataProfile = async (req, res = response) => {
     if(name != null || name != '') updateData.person_name = name;
     if(lastname != null || lastname != '') updateData.lastname = lastname;
     if(email != null || email != '') updateData.email = email;
-    if(password != null || password != '') {
+    if(password !== null || password !== '') {
 
         const compare = await decryptPassword(password, pass);
         if(!compare) {
@@ -988,5 +990,26 @@ export const resetPassword = async (req, res = response) => {
         })
     } catch (error) {
         return res.status(400).json({msg: error.message});
+    }
+}
+
+export const setCheckSteps = async (req, res = response) => {
+    const { idProfile } = req.params;
+    const { checkSteps } = req.body;
+
+    try {
+        await Profile.update({
+            check_steps: checkSteps
+        }, {
+            where: {id_profile: idProfile}
+        });
+
+        res.status(200).json({
+            msg:'Updated'
+        });
+    } catch (error) {
+        res.status(401).json({
+            msg: error.message
+        })
     }
 }

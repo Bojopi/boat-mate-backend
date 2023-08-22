@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { validateJWT, validateJWTExpired } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
-import { addService, deleteService, getAllProviders, getOneServiceProvider, getProvider, getServiceProvider, getServicesProvider, updateProvider, updateService } from '../controllers/provider.controller.js';
+import { addService, addServices, deleteService, getAllProviders, getOneServiceProvider, getProvider, getServiceProvider, getServicesProvider, updateProvider, updateService } from '../controllers/provider.controller.js';
 
 const router = Router();
 
@@ -19,7 +19,7 @@ router.get('/provider/:idProvider', [
 router.post('/provider-edit/:idProvider', [
     validateJWTExpired,
     validateJWT,
-    validateRol('ADMIN', 'SUPERADMIN')
+    validateRol('ADMIN', 'SUPERADMIN', 'PROVIDER')
 ], updateProvider)
 
 router.get('/service-provider/:idProvider', [
@@ -45,6 +45,12 @@ router.post('/service-provider/:idProvider', [
     validateJWT,
     validateRol('ADMIN', 'SUPERADMIN', 'PROVIDER')
 ], addService);
+
+router.post('/update-services/:idProvider', [
+    // validateJWTExpired,
+    // validateJWT,
+    // validateRol('ADMIN', 'SUPERADMIN', 'PROVIDER')
+], addServices);
 
 router.post('/service-provider-edit/:idProvider/:idService', [
     validateJWTExpired,

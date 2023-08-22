@@ -20,6 +20,10 @@ export const Profile = sequelize.define('profiles', {
     },
     google: {
         type: DataTypes.BOOLEAN,
+    },
+    check_steps: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 }, {
     timestamps: false
