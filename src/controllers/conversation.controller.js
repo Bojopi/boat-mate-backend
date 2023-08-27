@@ -10,6 +10,7 @@ import { Message } from "../models/Message.js";
 import { sequelize } from "../database/database.js";
 import { Conversation } from "../models/Conversation.js";
 import { Contract } from "../models/Contract.js";
+import { io } from '../index.js'
 
 export const createMessage = async (req, res = response) => {
     const {idContract} = req.params;
@@ -25,6 +26,7 @@ export const createMessage = async (req, res = response) => {
     try {
         await sequelize.transaction(async (t) => {
             let message;
+            let idConversation;
 
             const conversation = await Conversation.findOne({
                 where: { contractId: idContract },
@@ -47,6 +49,8 @@ export const createMessage = async (req, res = response) => {
                     transaction: t
                 })
 
+                idConversation = conversation[0].id_conversation
+
                 message = await Message.create({
                     ...data,
                     conversationId: conversation[0].id_conversation
@@ -55,6 +59,8 @@ export const createMessage = async (req, res = response) => {
                         transaction: t
                 })
             }
+
+            // io.to(idConversation).emit('message', message);
 
             res.status(200).json({
                 msg: 'Message send',
@@ -74,24 +80,67 @@ export const getConversation = async (req, res = response) => {
     try {
         await sequelize.transaction(async (t) => {
             const conversation = await Conversation.findOne({
-                attributes: [
-                    'id_conversation',
-                    'conversation_state',
-                    'contract.id_contract',
-                    'contract.contract_description',
-                    'contract.contract_state',
-                    'contract.contract_date',
-                    'contract.contract_price',
-                    'contract.customer.profile.email',
-                    'contract.customer.profile.person.person_name',
-                    'contract.customer.profile.person.lastname',
-                    'contract.customer.profile.person.phone',
-                ],
+                // attributes: [
+                //     'id_conversation',
+                //     'conversation_state',
+                //     'contract.id_contract',
+                //     'contract.contract_date',
+                //     'contract.contract_state',
+                //     'contract.contract_description',
+                //     'contract.contract_price',
+                //     'contract.contract_date_finished',
+                //     'contract.service_provider.service_provider_state',
+                //     'contract.service_provider.service.service_name',
+                //     'contract.service_provider.provider.id_provider',
+                //     'contract.service_provider.provider.provider_name',
+                //     'contract.service_provider.provider.provider_lat',
+                //     'contract.service_provider.provider.provider_lng',
+                //     'contract.service_provider.provider.provider_zip',
+                //     'contract.service_provider.provider.provider_image',
+                //     'contract.service_provider.provider.profile.email',
+                //     'contract.service_provider.provider.profile.person.person_name',
+                //     'contract.service_provider.provider.profile.person.lastname',
+                //     'contract.service_provider.provider.profile.person.phone'
+                // ],
                 where: {contractId: idContract},
-                include: [{
-                    model: Contract,
-                    attributes: [],
+                // include: [{
+                //     model: Contract,
+                //     attributes: [],
+                //     include: [{
+                //         model: ServiceProviders,
+                //         attributes: [],
+                //         include: [{
+                //             model: Service,
+                //             attributes: []
+                //         }, {
+                //             model: Provider,
+                //             attributes: []
+                //         }]
+                //     }]
+                // }],
+                transaction: t
+            });
+
+            let messages;
+            if(conversation) {
+                messages = await Message.findAll({
+                    attributes: [
+                        'id_message',
+                        'message_text',
+                        'message_date',
+                        'message_read',
+                        'provider.id_provider',
+                        'provider.provider_name',
+                        'provider.provider_image',
+                        'customer.id_customer',
+                        'customer.profile.person.person_name',
+                        'customer.profile.person.lastname',
+                    ],
+                    where: {conversationId: conversation.id_conversation},
                     include: [{
+                        model: Provider,
+                        attributes: []
+                    }, {
                         model: Customer,
                         attributes: [],
                         include: [{
@@ -102,16 +151,9 @@ export const getConversation = async (req, res = response) => {
                                 attributes: []
                             }]
                         }]
-                    }]
-                }],
-                raw: true,
-                transaction: t
-            });
-
-            let messages;
-            if(conversation) {
-                messages = await Message.findAll({
-                    where: {conversationId: conversation.id_conversation},
+                    }],
+                    order: [['message_date', 'ASC']],
+                    raw: true,
                     transaction: t
                 })
             }
@@ -124,215 +166,207 @@ export const getConversation = async (req, res = response) => {
     }
 };
 
-// export const getCustomersPost = async (req, res = response) => {
-//     const {idCustomer} = req.params;
+export const getConversationsCustomer = async (req, res = response) => {
+    const { idCustomer } = req.params;
 
-//     try {
-//         const ratings = await Rating.findAll({
-//             where: {customerId: idCustomer}
-//         });
+    try {
+        const contracts = await Contract.findAll({
+            where: {customerId: idCustomer},
+            attributes: [
+                'id_contract',
+                'contract_date',
+                'contract_date_finished',
+                'contract_state',
+                'contract_description',
+                'contract_price',
+                'service_provider.service_provider_state',
+                'service_provider.service.service_name',
+                'service_provider.provider.id_provider',
+                'service_provider.provider.provider_name',
+                'service_provider.provider.provider_lat',
+                'service_provider.provider.provider_lng',
+                'service_provider.provider.provider_zip',
+                'service_provider.provider.provider_image',
+                'service_provider.provider.profile.email',
+                'service_provider.provider.profile.person.person_name',
+                'service_provider.provider.profile.person.lastname',
+                'service_provider.provider.profile.person.phone'
+            ],
+            include: [{
+                model: ServiceProviders,
+                attributes: [],
+                include: [{
+                    model: Service,
+                    attributes: []
+                }, {
+                    model: Provider,
+                    attributes: [],
+                    include: [{
+                        model: Profile,
+                        attributes: [],
+                        include: [{
+                            model: Person,
+                            attributes: []
+                        }]
+                    }]
+                }]
+            }],
+            raw: true,
+        });
 
-//         res.status(200).json({ratings});
-//     } catch (error) {
-//         return res.status(400).json({msg: error.message});
-//     }
-// };
+        const conversationsByContract = [];
 
-// export const getRatingProvider = async (req, res = response) => {
+        for (const contract of contracts) {
+            const conversations = await Conversation.findAll({
+                where: { contractId: contract.id_contract }
+            });
 
-//     const {idProvider} = req.params;
+            for (const conversation of conversations) {
+                const messages = await Message.findAll({
+                    where: {conversationId: conversation.id_conversation},
+                    attributes: [
+                        'id_message',
+                        'message_text',
+                        'message_date',
+                        'message_read',
+                        'provider.id_provider',
+                        'provider.provider_name',
+                        'provider.provider_image',
+                        'customer.id_customer',
+                        'customer.profile.person.person_name',
+                        'customer.profile.person.lastname',
+                    ],
+                    include: [{
+                        model: Provider,
+                        attributes: []
+                    }, {
+                        model: Customer,
+                        attributes: [],
+                        include: [{
+                            model: Profile,
+                            attributes: [],
+                            include:[{
+                                model: Person,
+                                attributes: []
+                            }]
+                        }]
+                    }],
+                    order: [['message_date', 'ASC']],
+                    raw: true,
+                })
 
-//     try {
-//         const rating = await Rating.findAll({
-//             attributes: [
-//                 'id_rating',
-//                 'rating',
-//                 'review',
-//                 'rating_date',
-//                 'provider_visible',
-//                 'service_provider.id_service_provider',
-//                 'service_provider.service_provider_description',
-//                 'service_provider.provider.id_provider',
-//                 'service_provider.provider.provider_name',
-//                 'service_provider.provider.provider_image',
-//                 'service_provider.service.id_service',
-//                 'service_provider.service.service_name',
-//                 'customer.id_customer',
-//                 'customer.profile.email',
-//                 'customer.profile.person.person_name',
-//                 'customer.profile.person.lastname',
-//                 'customer.profile.person.phone',
-//                 'customer.profile.person.person_image',
-//             ],
-//             include: [{
-//                 model: ServiceProviders,
-//                 attributes: [],
-//                 where: {providerIdProvider: idProvider},
-//                 include: [{
-//                     model: Provider,
-//                     attributes: []
-//                 }, {
-//                     model: Service,
-//                     attributes: []
-//                 }]
-//             }, {
-//                 model: Customer,
-//                 attributes: [],
-//                 include: [{
-//                     model: Profile,
-//                     attributes: [],
-//                     include: [{
-//                         model: Person,
-//                         attributes: []
-//                     }]
-//                 }]
-//             }],
-//             order: [['rating_date', 'DESC']],
-//             raw: true
-//         })
+                conversationsByContract.push({
+                    contract,
+                    conversations,
+                    messages
+                });
+            }
+        }
 
-//         const countRating = await Rating.count({
-//             include: [{
-//                 model: ServiceProviders,
-//                 attributes: [],
-//                 where: {providerIdProvider: idProvider},
-//                 include: [{
-//                     model: Provider,
-//                     attributes: []
-//                 }, {
-//                     model: Service,
-//                     attributes: []
-//                 }]
-//             }, {
-//                 model: Customer,
-//                 attributes: [],
-//                 include: [{
-//                     model: Profile,
-//                     attributes: [],
-//                     include: [{
-//                         model: Person,
-//                         attributes: []
-//                     }]
-//                 }]
-//             }]
-//         })
-//         res.status(200).json({ countRating, rating });
-//     } catch (error) {
-//         return res.status(400).json({msg: error.message});
-//     }
-// };
+        return res.status(200).json({
+            conversationsByContract
+        })
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+}
 
-// export const postRating = async (req, res = response) => {
-//     const {idCustomer} = req.params;
-//     const {
-//         idServiceProvider,
-//         rating: ratingNew,
-//         review
-//     } = req.body;
+export const getConversationsProvider = async (req, res = response) => {
+    const { idProvider } = req.params;
 
-//     try {
-//         const {id_rating} = await Rating.create({
-//             rating: ratingNew,
-//             review: review,
-//             customerId: idCustomer,
-//             serviceProviderId: idServiceProvider
-//         });
+    try {
+        const contracts = await Contract.findAll({
+            attributes: [
+                'id_contract',
+                'contract_date',
+                'contract_date_finished',
+                'contract_state',
+                'contract_description',
+                'contract_price',
+                'service_provider.service_provider_state',
+                'service_provider.service.service_name',
+                'customer.profile.email',
+                'customer.profile.person.person_name',
+                'customer.profile.person.lastname',
+                'customer.profile.person.phone',
+                'customer.profile.person.person_image',
+            ],
+            include: [{
+                model: ServiceProviders,
+                attributes: [],
+                where: {providerIdProvider: idProvider},
+                include: [{
+                    model: Service,
+                    attributes: []
+                }]
+            }, {
+                model: Customer,
+                attributes: [],
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    }]
+                }]
+            }],
+            raw: true,
+        });
 
-//         const rating = await Rating.findOne({
-//             attributes: [
-//                 'id_rating',
-//                 'rating',
-//                 'review',
-//                 'rating_date',
-//                 'provider_visible',
-//                 'service_provider.id_service_provider',
-//                 'service_provider.service_provider_description',
-//                 'service_provider.provider.id_provider',
-//                 'service_provider.provider.provider_name',
-//                 'service_provider.provider.provider_image',
-//                 'service_provider.service.id_service',
-//                 'service_provider.service.service_name',
-//                 'customer.id_customer',
-//                 'customer.profile.email',
-//                 'customer.profile.person.person_name',
-//                 'customer.profile.person.lastname',
-//                 'customer.profile.person.phone',
-//                 'customer.profile.person.person_image',
-//             ],
-//             where: {id_rating: id_rating},
-//             include: [{
-//                 model: ServiceProviders,
-//                 attributes: [],
-//                 include: [{
-//                     model: Provider,
-//                     attributes: []
-//                 }, {
-//                     model: Service,
-//                     attributes: []
-//                 }]
-//             }, {
-//                 model: Customer,
-//                 attributes: [],
-//                 include: [{
-//                     model: Profile,
-//                     attributes: [],
-//                     include: [{
-//                         model: Person,
-//                         attributes: []
-//                     }]
-//                 }]
-//             }],
-//             raw: true
-//         });
+        const conversationsByContract = [];
 
-//         res.status(200).json({
-//             msg: 'Review successfully created',
-//             rating
-//         });
-//     } catch (error) {
-//         return res.status(400).json({msg: error.message});
-//     }
-// };
+        for (const contract of contracts) {
+            const conversations = await Conversation.findAll({
+                where: { contractId: contract.id_contract }
+            });
 
-// export const updateRating = async (req, res = response) => {
-//     const {idRating} = req.params;
-//     const {rating, review} = req.body;
+            for (const conversation of conversations) {
+                const messages = await Message.findAll({
+                    where: {conversationId: conversation.id_conversation},
+                    attributes: [
+                        'id_message',
+                        'message_text',
+                        'message_date',
+                        'message_read',
+                        'provider.id_provider',
+                        'provider.provider_name',
+                        'provider.provider_image',
+                        'customer.id_customer',
+                        'customer.profile.person.person_name',
+                        'customer.profile.person.lastname',
+                    ],
+                    include: [{
+                        model: Provider,
+                        attributes: []
+                    }, {
+                        model: Customer,
+                        attributes: [],
+                        include: [{
+                            model: Profile,
+                            attributes: [],
+                            include:[{
+                                model: Person,
+                                attributes: []
+                            }]
+                        }]
+                    }],
+                    order: [['message_date', 'ASC']],
+                    raw: true,
+                })
 
-//     let dataRating = {}
+                conversationsByContract.push({
+                    contract,
+                    conversations,
+                    messages
+                });
+            }
+        }
 
-//     if(rating != null && rating != "") dataRating.rating = rating;
-//     if(review != null && review != "") dataRating.review = review;
-
-//     try {
-//         const rating = await Rating.update(dataRating, {
-//             where: {id_rating: idRating},
-//             returning: true
-//         });
-
-//         res.status(200).json({rating});
-//     } catch (error) {
-//         return res.status(400).json({msg: error.message});
-//     }
-// };
-
-// export const changeVisible = async (req, res = response) => {
-//     const {idRating} = req.params;
-//     const {provider_visible} = req.body;
-
-//     try {
-//         const rating  = await Rating.update({
-//             provider_visible: provider_visible
-//         }, {
-//             where: {id_rating: idRating},
-//             returning: ['provider_visible']
-//         });
-
-//         res.status(200).json({
-//             msg: provider_visible ? 'Rating visible!' : 'Rating hidden!',
-//             rating
-//         });
-//     } catch (error) {
-//         return res.status(400).json({msg: error.message});
-//     }
-// };
-
+        return res.status(200).json({
+            conversationsByContract
+        })
+    } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+}

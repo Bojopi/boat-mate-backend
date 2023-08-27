@@ -5,4 +5,6 @@ import { account } from "../controllers/stripe.controller.js";
 
 const router = Router();
 
-router.post('/stripe-create', account)
+router.post('/stripe-create/:idProvider', account);
+
+export default router;

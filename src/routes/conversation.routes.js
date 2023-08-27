@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { validateJWT, validateJWTExpired } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
-import { createMessage, getConversation } from '../controllers/conversation.controller.js';
+import { createMessage, getConversation, getConversationsCustomer, getConversationsProvider } from '../controllers/conversation.controller.js';
 
 const router = Router();
     
@@ -11,10 +11,15 @@ router.get('/conversation/:idContract', [
     validateRol('PROVIDER', 'CUSTOMER')
 ], getConversation);
 
-// router.get('/rating/:idRating', [
-//     validateJWTExpired,
-//     validateJWT
-// ], getOneRating);
+router.get('/conversation-customer/:idCustomer', [
+    validateJWTExpired,
+    validateJWT
+], getConversationsCustomer);
+
+router.get('/conversation-provider/:idProvider', [
+    validateJWTExpired,
+    validateJWT
+], getConversationsProvider);
 
 // router.get('/customer-rating/:idCustomer', [
 //     validateJWTExpired,
