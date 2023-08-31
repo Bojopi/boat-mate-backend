@@ -35,47 +35,24 @@ let connectedUsers = [];
 
 
 io.on('connection', (socket) => {
-    
-    socket.on('user_connected', (userId) => {
-        console.log(userId, 'user id')
-        if(!connectedUsers.some((user) => user.uid === userId)) {
-            connectedUsers.push({
-                uid: userId,
-                socketId: socket.id
-            })
-        }
-        
-        console.log('Clients Connect', connectedUsers);
-        io.emit('get-users', connectedUsers);
-    });
-    // socket.emit('test', {test: 'hello'})
-    
-    // eventEmitter.on('contract-create', (data) => {
-    //     const user = usersService.getCustomerById(data.id_customer)
-        
-    //     if(user){
-    //         socket.to(user.socket).emit('contract-create', data)
-    //     }
-    //     socket.emit('contract-create', data)
 
-    // })
-
-    socket.on('message', (data) => {
-        // const {providerId, customerId} = data;
-        // const userSocketId = connectedUsers[providerId || customerId]
-        console.log(data);
-
-        // io.to(data.conversationId).emit('message', data);
-        // if(userSocketId) {
-        //     io.to(userSocketId).emit('message', data)
-        // }
-        socket.broadcast.emit('message', data);
-        // socket.emit('message', data);
+    socket.on('join-room', ({userId, roomId}) => {
+        const user = usersService.joinUserToChat(socket.id, userId, roomId);
+        console.log('user joined', user)
+        socket.join(user.roomId);
     })
 
-    socket.on("disconnect", () => {
-        connectedUsers = connectedUsers.filter((user) => user.socketId !== socket.id);
-        console.log('User disconnected', connectedUsers);
-        io.emit('get-users', connectedUsers)
+    socket.on('message', (data) => {
+        const user = usersService.getCurrentUser(socket.id);
+        console.log('message sent', user)
+        io.to(user.roomId).emit('message', {data, roomId: user.roomId});
+    })
+
+    socket.on("disconnect-room", () => {
+        const user = usersService.disconnectUser(socket.id);
+
+        if(user) {
+            console.log('User disconnected', user);
+        }
     })
 })

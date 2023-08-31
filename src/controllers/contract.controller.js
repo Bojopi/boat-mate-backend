@@ -216,6 +216,7 @@ export const getContracsProvider = async (req, res = response) => {
                     }]
                 }]
             }],
+            order: [['contract_date', 'DESC']],
             raw: true,
         });
 

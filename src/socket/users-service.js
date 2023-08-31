@@ -23,6 +23,25 @@ class UsersService{
         const customer = this.users.find((user) => user.idCustomer === id)
         return customer
     }
+
+
+    //New methods for rooms
+    joinUserToChat(id, userId, roomId){
+        const userJoin = {id, userId, roomId}
+        this.users.push(userJoin)
+        return userJoin
+    };
+
+    getCurrentUser(id){
+        return this.users.find((user) => user.id === id);
+    };
+
+    disconnectUser(id){
+        const index =  this.users.findIndex((user) => user.id === id);
+        if(index !== 1) {
+            return this.users.splice(index, 1)[0];
+        }
+    }
 }
 
 export default UsersService
