@@ -28,6 +28,7 @@ export const getAllProviders = async (req, res = response) => {
         const providers = await Provider.findAll({
             attributes: [
                 'id_provider',
+                'provider_id_stripe',
                 'provider_name',
                 'provider_description',
                 'provider_lat',
@@ -65,6 +66,7 @@ export const getProvider = async (req, res = response) => {
         const provider = await Provider.findOne({
             attributes: [
                 'id_provider',
+                'provider_id_stripe',
                 'provider_name',
                 'provider_image',
                 'provider_description',
@@ -421,6 +423,7 @@ export const updateProvider = async (req, res = response) => {
             const prov = await Provider.findOne({
                 attributes: [
                     'id_provider',
+                    'provider_id_stripe',
                     'provider_name',
                     'provider_image',
                     'provider_description',

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validateJWT, validateJWTExpired } from '../middlewares/validate-jwt.js';
 import { validateRol } from '../middlewares/validate-rol.js';
-import { accountSession, checkoutSession, createExpressAccount, createPaymentMethod, createProductPrice, listAllPrices, listCapabilities, loginLink, oauthAccount, paymentIntent, paymentMethodList, viewAccount, viewPerson } from "../controllers/stripe.controller.js";
+import { accountSession, checkoutSession, createExpressAccount, createPaymentMethod, createProductPrice, getCardData, listAllPrices, listCapabilities, loginLink, oauthAccount, paymentIntent, paymentMethodList, viewAccount, viewPerson } from "../controllers/stripe.controller.js";
 
 const router = Router();
 
@@ -14,6 +14,8 @@ router.get('/view-person', viewPerson);
 router.get('/list-prices', listAllPrices);
 
 router.get('/capability-account/:idStripe', listCapabilities);
+
+router.get('/get-cards/:idStripe', getCardData);
 
 router.post('/payment-intent', paymentIntent);
 

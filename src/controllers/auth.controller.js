@@ -84,6 +84,7 @@ export const login = async (req, res = response) => {
             profile = await Provider.findOne({
                 attributes: [
                     'id_provider',
+                    'provider_id_stripe',
                     'provider_name',
                     'provider_image',
                     'provider_description',
@@ -295,6 +296,7 @@ export const googleSignIn = async (req, res = response) => {
                 user = await Provider.findOne({
                     attributes: [
                         'id_provider',
+                        'provider_id_stripe',
                         'provider_name',
                         'provider_image',
                         'provider_description',

@@ -68,7 +68,6 @@ export const loginLink = async (req, res = response) => {
 
 export const accountSession = async (req, res = response) => {
     const { accountId } = req.params;
-    console.log(accountId)
     try {
         const accountSessionData = await str.accountSessions.create({
             account: accountId,
@@ -295,6 +294,34 @@ export const paymentMethodList = async (req, res = response) => {
             paymentMethods
         });
     } catch (error) {
+        return res.status(400).json({msg: error.message});
+    }
+}
+
+export const getCardData = async (req, res = response) => {
+    const { idStripe } = req.params;
+    try {
+        const cards = await str.accounts.listExternalAccounts(
+            idStripe,
+            { object: 'card' }
+        );
+        res.status(200).json({cards})
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({msg: error.message});
+    }
+}
+
+export const updateCardData = async (req, res = response) => {
+    const { stripeId } = req.params;
+    try {
+        const cards = await str.accounts.listExternalAccounts(
+            stripeId,
+            { object: 'card' }
+        );
+        res.status(200).json({cards})
+    } catch (error) {
+        console.log(error)
         return res.status(400).json({msg: error.message});
     }
 }
