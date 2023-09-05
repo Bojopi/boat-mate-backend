@@ -401,6 +401,7 @@ export const setDataProfile = async (req, res = response) => {
                 resUser = await Provider.findOne({
                     attributes: [
                         'id_provider',
+                        'provider_id_stripe',
                         'provider_name',
                         'provider_image',
                         'provider_description',

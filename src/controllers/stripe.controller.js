@@ -1,11 +1,19 @@
 import { response } from 'express';
 import stripe from 'stripe';
 import { Provider } from '../models/Provider.js';
+import { serialize } from "cookie";
+import { Profile } from '../models/Profile.js';
+import { Person } from '../models/Person.js';
+import { Role } from '../models/Role.js';
+import { updateJWT } from '../helpers/generate-jwt.js';
 
 const str = stripe('sk_test_51N3mL2KHtcU5N9YX9BCRudz7A2vkrUIuVAdjF1i5noVFR2mdoDva8Mu8wbWsMHwKhx2BQfL7FutZHlu4J2DKfreZ00E8ODpuvf');
 
+const endpointSecret = 'whsec_07d85145aca56c4df4c48efc4e122a0a1cf292c9ab816702f1fb801670543dbf'
+
 export const createExpressAccount = async (req, res = response) => {
     const { idProvider } = req.params;
+    const { tokenUser } = req.cookies;
 
     try {
         const stripeAccount = await str.accounts.create({
@@ -32,10 +40,63 @@ export const createExpressAccount = async (req, res = response) => {
                 where: {id_provider: idProvider}
             });
 
+            const resUser = await Provider.findOne({
+                attributes: [
+                    'id_provider',
+                    'provider_id_stripe',
+                    'provider_name',
+                    'provider_image',
+                    'provider_description',
+                    'provider_lat',
+                    'provider_lng',
+                    'provider_zip',
+                    'profile.id_profile',
+                    'profile.profile_state',
+                    'profile.email',
+                    'profile.google',
+                    'profile.person.id_person',
+                    'profile.person.person_name',
+                    'profile.person.lastname',
+                    'profile.person.phone',
+                    'profile.person.person_image',
+                    'profile.role.id_role',
+                    'profile.role.role_description',
+                ],
+                where: {id_provider: idProvider},
+                include: [{
+                    model: Profile,
+                    attributes: [],
+                    include: [{
+                        model: Person,
+                        attributes: []
+                    },
+                    {
+                        model: Role,
+                        attributes: []
+                    }]
+                }],
+                raw: true
+            });
+
+            //update the jwt
+            const token = await updateJWT(resUser, tokenUser);
+
+            const serialized = serialize('tokenUser', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'lax',
+                maxAge: 1000 * 60 * 60 * 23,
+                path: '/',
+            })
+
+            res.setHeader('Set-Cookie', serialized);
+
             const accountLink = await str.accountLinks.create({
                 account: stripeAccount.id,
-                refresh_url: 'http://localhost:3000/welcome/profile',
-                return_url: 'http://localhost:3000/welcome/profile',
+                refresh_url: 'https://boatmate.com/welcome/profile',
+                // refresh_url: 'http://localhost:3000/welcome/profile',
+                return_url: 'https://boatmate.com/welcome/profile',
+                // return_url: 'http://localhost:3000/welcome/profile',
                 type: 'account_onboarding',
             })
             
@@ -190,8 +251,8 @@ export const checkoutSession = async (req, res = response) => {
                         quantity: 1,
                     },
                 ],
-                success_url: 'https://example.com/success',
-                cancel_url: 'https://example.com/cancel',
+                success_url: 'http://localhost:3000/profile',
+                cancel_url: 'http://localhost:3000/profile',
             },
             {
                 stripeAccount: stripeId,
@@ -203,6 +264,54 @@ export const checkoutSession = async (req, res = response) => {
         })
     } catch (error) {
         return res.status(400).json({msg: error.message});
+    }
+}
+
+// stripe event listen
+const fulfillOrder = (lineItems) => {
+    console.log("Fulfilling order", lineItems);
+}
+
+export const eventPaymentComplete = async (req, res = response) => {
+    console.log('=======================aqui entro')
+    const payload = req.body;
+    console.log('payload', payload)
+    const sig = req.headers['stripe-signature'];
+    console.log('sig', sig)
+
+    let event;
+
+    try {
+        console.log('==============================esperando al evento')
+        event = str.webhooks.constructEvent(payload, sig, endpointSecret);
+    } catch (error) {
+        return res.status(400).send(`Webhook Error: ${error.message}`);
+    }
+
+    // switch (event.type) {
+    //     case 'checkout.session.completed':
+    //         const checkoutSessionCompleted = event.data.object;
+    //         console.log(checkoutSessionCompleted)
+    //         break;
+    
+    //     default:
+    //         console.log(`Unhandled event type ${event.type}`);
+    // }
+
+    if(event.type === 'checkout.session.completed') {
+        const sessionWithLineItems = await str.checkout.sessions.retrieve(
+            event.data.object.id,
+            {
+                expand: ['line_items']
+            }
+        )
+
+        const lineItems = sessionWithLineItems.line_items;
+
+        console.log(lineItems)
+        fulfillOrder(lineItems)
+
+        res.status(200).end()
     }
 }
 

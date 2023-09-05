@@ -2,6 +2,7 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database.js";
 import { Gallery } from "./Gallery.js";
 import { Conversation } from "./Conversation.js";
+import { Invoice } from "./Invoice.js";
 
 export const Contract = sequelize.define('contracts', {
     id_contract: {
@@ -46,6 +47,15 @@ Contract.hasOne(Conversation, {
     sourceKey: 'id_contract'
 });
 Conversation.belongsTo(Contract, {
+    foreignKey: 'contractId',
+    targetKey: 'id_contract'
+});
+
+Contract.hasOne(Invoice, {
+    foreignKey: 'contractId',
+    sourceKey: 'id_contract'
+});
+Invoice.belongsTo(Contract, {
     foreignKey: 'contractId',
     targetKey: 'id_contract'
 });
